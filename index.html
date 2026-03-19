@@ -1487,15 +1487,14 @@
         let pencilSrc, pencilGain;
         let swashSrc, swashGain;
 
-        /* Prime the AudioContext for iOS Safari.
-           iOS requires that BOTH AudioContext creation AND a node's start()
-           happen synchronously within the same user-gesture call stack
-           (specifically touchend or click). If resume() is called async
-           or start() is deferred, the context stays suspended forever.
+        /* ─── AUDIO: new approach for iOS ───
+           Instead of a persistent looped BufferSource with gain envelope,
+           create a NEW short noise burst for EACH character stroke.
+           This avoids the iOS issue where a looped source started in
+           a user-gesture becomes silent after the first async break.
+           Each pencilOn() creates a fresh source and starts it → works
+           regardless of iOS AudioContext quirks. */
 
-           Strategy: create AC + play a silent 1-sample buffer immediately
-           in the event handler. This "unlocks" the AC. Then build the
-           actual pencil chain right after — still in the same call stack. */
         function initAudio() {
             try {
                 ac = new (window.AudioContext || window.webkitAudioContext)();
@@ -1503,59 +1502,63 @@
                 masterGain = ac.createGain();
                 masterGain.gain.value = 1;
                 masterGain.connect(ac.destination);
-
-                /* "Prime" trick: play a tiny silent buffer to force iOS
-                   to transition the context to 'running' right now. */
-                const silentBuf = ac.createBuffer(1, 1, ac.sampleRate);
-                const silentSrc = ac.createBufferSource();
-                silentSrc.buffer = silentBuf;
-                silentSrc.connect(ac.destination);
-                silentSrc.start();
             } catch(e) {
                 ac = null;
             }
         }
 
-        /* Build and immediately start the pencil noise chain.
-           Called right after initAudio() in the same call stack. */
+        /* Pre-generate a reusable noise buffer */
+        let noiseBuf = null;
         function buildPencilChain() {
             if (!ac) return;
             const sr  = ac.sampleRate;
-            const len = sr * 3;
-            const buf = ac.createBuffer(1, len, sr);
-            const d   = buf.getChannelData(0);
+            const len = sr * 2;
+            noiseBuf = ac.createBuffer(1, len, sr);
+            const d   = noiseBuf.getChannelData(0);
             let v = 0;
             for (let i = 0; i < len; i++) {
                 const white = Math.random() * 2 - 1;
                 v = (v + 0.04 * white) / 1.04;
                 d[i] = v * 2.8 + white * 0.3;
             }
+            /* No source created yet — pencilOn() will create one each time */
+        }
+
+        /* Create a fresh noise source each time a character is drawn.
+           This sidesteps iOS issues with long-running looped sources. */
+        function pencilOn() {
+            if (!ac || !noiseBuf) return;
+            /* Stop previous source if still playing */
+            try { if (pencilSrc) pencilSrc.stop(); } catch(e) {}
+
             pencilSrc = ac.createBufferSource();
-            pencilSrc.buffer = buf;
+            pencilSrc.buffer = noiseBuf;
             pencilSrc.loop = true;
 
             const bp = ac.createBiquadFilter();
             bp.type = 'bandpass'; bp.frequency.value = 4200; bp.Q.value = 0.5;
-
             const hp = ac.createBiquadFilter();
             hp.type = 'highpass'; hp.frequency.value = 1800;
-
             const sh = ac.createBiquadFilter();
             sh.type = 'highshelf'; sh.frequency.value = 5500; sh.gain.value = 4;
 
             pencilGain = ac.createGain();
-            pencilGain.gain.value = 0;
+            pencilGain.gain.value = 0.38;
 
             pencilSrc.connect(bp).connect(hp).connect(sh).connect(pencilGain).connect(masterGain);
             pencilSrc.start();
         }
 
-        function pencilOn()  { if (pencilGain && ac) pencilGain.gain.setTargetAtTime(0.38, ac.currentTime, 0.02); }
-        function pencilOff() { if (pencilGain && ac) pencilGain.gain.setTargetAtTime(0, ac.currentTime, 0.04); }
+        function pencilOff() {
+            try { if (pencilSrc) pencilSrc.stop(); } catch(e) {}
+            pencilSrc = null;
+            pencilGain = null;
+        }
+
         function pencilWobble(t) {
             if (!pencilGain || !ac) return;
             const v = 0.32 + Math.sin(t * 0.013) * 0.08 + Math.random() * 0.04;
-            pencilGain.gain.setTargetAtTime(v, ac.currentTime, 0.01);
+            pencilGain.gain.value = v;
         }
 
         /* Swash sound: filtered sweep for the gold flourish */
@@ -1589,9 +1592,6 @@
 
         function stopAll() {
             pencilOff();
-            setTimeout(() => {
-                try { if (pencilSrc) pencilSrc.stop(); } catch(e) {}
-            }, 200);
         }
 
         /* ─── DRAWING ─── */
@@ -1757,7 +1757,7 @@
             runIntro();
         }
         intro.addEventListener('click', handleStart);
-        intro.addEventListener('touchend', handleStart);
+        intro.addEventListener('touchstart', handleStart, { passive: true });
 
         /* ─── ARROW → SITE ─── */
         arrow.addEventListener('click', function(e) {
