@@ -1487,25 +1487,23 @@
         let pencilSrc, pencilGain;
         let swashSrc, swashGain;
 
-        async function initAudio() {
-            ac = new (window.AudioContext || window.webkitAudioContext)();
-            if (ac.state === 'suspended') {
-                await ac.resume();
+        function initAudio() {
+            try {
+                ac = new (window.AudioContext || window.webkitAudioContext)();
+                /* resume() must be called synchronously inside the user-gesture
+                   call stack — otherwise iOS/Safari will ignore it. */
+                ac.resume();
+                masterGain = ac.createGain();
+                masterGain.gain.value = 1;
+                masterGain.connect(ac.destination);
+            } catch(e) {
+                ac = null;
             }
-            /* Double-check: on some mobile browsers resume() resolves
-               before the context is truly running. Poll briefly. */
-            let waited = 0;
-            while (ac.state !== 'running' && waited < 500) {
-                await new Promise(r => setTimeout(r, 50));
-                waited += 50;
-            }
-            masterGain = ac.createGain();
-            masterGain.gain.value = 1;
-            masterGain.connect(ac.destination);
         }
 
         /* Pencil on paper: pink-ish noise → higher bandpass → bright shelf */
         function buildPencilChain() {
+            if (!ac) return;
             const sr  = ac.sampleRate;
             const len = sr * 3;
             const buf = ac.createBuffer(1, len, sr);
@@ -1537,10 +1535,10 @@
             pencilSrc.start();
         }
 
-        function pencilOn()  { if (pencilGain) pencilGain.gain.setTargetAtTime(0.38, ac.currentTime, 0.02); }
-        function pencilOff() { if (pencilGain) pencilGain.gain.setTargetAtTime(0, ac.currentTime, 0.04); }
+        function pencilOn()  { if (pencilGain && ac) pencilGain.gain.setTargetAtTime(0.38, ac.currentTime, 0.02); }
+        function pencilOff() { if (pencilGain && ac) pencilGain.gain.setTargetAtTime(0, ac.currentTime, 0.04); }
         function pencilWobble(t) {
-            if (!pencilGain) return;
+            if (!pencilGain || !ac) return;
             const v = 0.32 + Math.sin(t * 0.013) * 0.08 + Math.random() * 0.04;
             pencilGain.gain.setTargetAtTime(v, ac.currentTime, 0.01);
         }
@@ -1577,7 +1575,7 @@
         function stopAll() {
             pencilOff();
             setTimeout(() => {
-                try { pencilSrc && pencilSrc.stop(); } catch(e) {}
+                try { if (pencilSrc) pencilSrc.stop(); } catch(e) {}
             }, 200);
         }
 
@@ -1664,8 +1662,18 @@
 
         /* ─── MAIN SEQUENCE ─── */
         async function runIntro() {
+            initAudio();
+
+            /* Wait for Dancing Script font — critical for canvas text rendering.
+               On mobile, the font may not be loaded yet when animation starts,
+               causing canvas to draw invisible/zero-width text. */
+            try {
+                await document.fonts.load('700 48px "Dancing Script"');
+            } catch(e) { /* fallback: wait a bit for font to arrive */ 
+                await new Promise(r => setTimeout(r, 300));
+            }
+
             sizeCanvas();
-            await initAudio();
             buildPencilChain();
 
             const chars = TEXT.split('');
