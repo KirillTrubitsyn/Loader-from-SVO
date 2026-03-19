@@ -791,6 +791,72 @@
             font-family: monospace;
         }
 
+        /* CTA buttons */
+        .hero-cta {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            padding: 0.85rem 2rem;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            letter-spacing: 0.02em;
+        }
+
+        .cta-button--primary {
+            background: var(--gold);
+            color: var(--navy-deep);
+            border: 2px solid var(--gold);
+        }
+
+        .cta-button--primary:hover {
+            background: var(--cream);
+            border-color: var(--cream);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201, 168, 76, 0.3);
+        }
+
+        .cta-button--outline {
+            background: transparent;
+            color: var(--cream);
+            border: 2px solid var(--white-20);
+        }
+
+        .cta-button--outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201, 168, 76, 0.15);
+        }
+
+        .channel-cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .skill-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 0.75rem;
+        }
+
         .skill-button {
             background: var(--cream);
             color: var(--navy-deep);
@@ -1021,6 +1087,11 @@
                 </div>
             </div>
 
+            <div class="hero-cta">
+                <a href="https://t.me/loaderfromSVO" target="_blank" rel="noopener noreferrer" class="cta-button cta-button--primary">Читать канал</a>
+                <a href="https://boosty.to/rbevzenko" target="_blank" rel="noopener noreferrer" class="cta-button cta-button--outline">Курсы на Boosty</a>
+            </div>
+
             <a href="#about" class="scroll-arrow" style="display:block;text-decoration:none;cursor:pointer;">↓</a>
         </div>
     </section>
@@ -1140,6 +1211,10 @@
                     <h4>Содержание</h4>
                     <p>Судебные акты, комментарии к законам, дискуссии</p>
                 </div>
+            </div>
+
+            <div class="channel-cta">
+                <a href="https://t.me/loaderfromSVO" target="_blank" rel="noopener noreferrer" class="cta-button cta-button--primary">Подписаться на канал</a>
             </div>
 
         </div>
@@ -1342,7 +1417,10 @@
                     <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--white-50);">После установки просто задавайте вопросы по российскому праву — Claude будет отвечать с учётом базы знаний Бевзенко.</p>
                 </div>
 
-                <a href="bevzenko-consult.skill" download class="skill-button">Скачать скилл</a>
+                <div class="skill-buttons">
+                    <a href="bevzenko-consult.skill" download class="skill-button">Скачать скилл</a>
+                    <a href="https://boosty.to/rbevzenko" target="_blank" rel="noopener noreferrer" class="cta-button cta-button--outline">Курсы на Boosty</a>
+                </div>
             </div>
         </div>
     </section>
@@ -1350,6 +1428,10 @@
     <!-- Footer -->
     <footer>
         <p>Данные собраны и проанализированы в марте 2026 года • На основе экспорта Telegram-канала «Loader from SVO»</p>
+        <div class="footer-links">
+            <a href="https://t.me/loaderfromSVO" target="_blank" rel="noopener noreferrer">Telegram</a>
+            <a href="https://boosty.to/rbevzenko" target="_blank" rel="noopener noreferrer">Boosty</a>
+        </div>
         <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--white-50);">
             Идея и разработка Кирилл Трубицын
         </p>
