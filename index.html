@@ -1,22 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<!--
-   ______                            __
-  / ____/___  ____ ___  ____  __  __/ /____  _____
- / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
-/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
-\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
-                    /_/
-        Created with Perplexity Computer
-        https://www.perplexity.ai/computer
--->
-
-<!-- Perplexity Computer Attribution — SEO Meta Tags -->
-<meta name="generator" content="Perplexity Computer">
-<meta name="author" content="Perplexity Computer">
-<meta property="og:see_also" content="https://www.perplexity.ai/computer">
-<link rel="author" href="https://www.perplexity.ai/computer">
+<!-- Идея и разработка: Кирилл Трубицын -->
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -159,8 +144,8 @@
 
         /* Sections */
         section {
-            min-height: 100vh;
-            padding: 8rem 2rem 4rem;
+            min-height: auto;
+            padding: 5rem 2rem 3rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -852,7 +837,7 @@
         /* Responsive */
         @media (max-width: 768px) {
             section {
-                padding: 6rem 1.5rem 3rem;
+                padding: 4rem 1.5rem 2rem;
             }
             .section-title {
                 font-size: 1.8rem;
@@ -1036,7 +1021,7 @@
                 </div>
             </div>
 
-            <div class="scroll-arrow">↓</div>
+            <a href="#about" class="scroll-arrow" style="display:block;text-decoration:none;cursor:pointer;">↓</a>
         </div>
     </section>
 
@@ -1045,7 +1030,6 @@
     <!-- Section 2: About Author -->
     <section id="about">
         <div>
-            <div class="section-eyebrow">Биография</div>
             <h2 class="section-title">Об авторе</h2>
 
             <div class="about-container">
@@ -1137,7 +1121,6 @@
     <!-- Section 3: About Channel -->
     <section id="channel">
         <div>
-            <div class="section-eyebrow">Канал</div>
             <h2 class="section-title">О канале</h2>
 
             <div class="channel-info">
@@ -1167,7 +1150,6 @@
     <!-- Section 4: Growth Dynamics -->
     <section id="growth">
         <div>
-            <div class="section-eyebrow">Аналитика</div>
             <h2 class="section-title">Динамика роста</h2>
 
             <div class="charts-container">
@@ -1190,11 +1172,10 @@
     <!-- Section 5: Topic Map -->
     <section id="topicmap">
         <div>
-            <div class="section-eyebrow">Контент</div>
             <h2 class="section-title">Тематическая карта</h2>
 
             <div class="topics-chart-container">
-                <canvas id="topicsChart" style="max-height: 600px;"></canvas>
+                <canvas id="topicsChart" style="max-height: 400px;"></canvas>
             </div>
 
             <div class="topics-grid-title">Нажмите на тему, чтобы увидеть последние публикации</div>
@@ -1210,7 +1191,6 @@
     <!-- Section 6: Evolution -->
     <section id="evolution">
         <div>
-            <div class="section-eyebrow">Хронология</div>
             <h2 class="section-title">Эволюция взглядов</h2>
 
             <div class="timeline-eras">
@@ -1301,7 +1281,6 @@
     <!-- Section 7: Principles -->
     <section id="principles">
         <div>
-            <div class="section-eyebrow">Убеждения</div>
             <h2 class="section-title">Принципиальные позиции</h2>
 
             <div class="principles-grid">
@@ -1343,7 +1322,6 @@
     <!-- Section 8: AI Skill -->
     <section id="aiskill">
         <div>
-            <div class="section-eyebrow">Инструмент</div>
             <h2 class="section-title">AI-скилл</h2>
 
             <div class="skill-card">
@@ -1353,11 +1331,15 @@
                 </p>
 
                 <div class="skill-steps">
+                    <h4 style="color: var(--cream); margin-bottom: 1rem; font-family: 'Playfair Display', serif;">Установка в Claude (Desktop и Web)</h4>
                     <ol>
-                        <li>Скачайте файл <code>bevzenko-consult.skill</code></li>
-                        <li>Установите в Claude Desktop → Settings → Skills</li>
-                        <li>Задавайте вопросы по российскому праву</li>
+                        <li>Скачайте файл <code>bevzenko-consult.skill</code> по кнопке ниже</li>
+                        <li>В боковом меню слева нажмите <code>Customize</code></li>
+                        <li>Выберите вкладку <code>Skills</code></li>
+                        <li>Нажмите <code>+</code> и выберите <code>Upload a skill</code></li>
+                        <li>Загрузите скачанный файл — готово!</li>
                     </ol>
+                    <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--white-50);">После установки просто задавайте вопросы по российскому праву — Claude будет отвечать с учётом базы знаний Бевзенко.</p>
                 </div>
 
                 <a href="bevzenko-consult.skill" download class="skill-button">Скачать скилл</a>
@@ -1368,8 +1350,8 @@
     <!-- Footer -->
     <footer>
         <p>Данные собраны и проанализированы в марте 2026 года • На основе экспорта Telegram-канала «Loader from SVO»</p>
-        <p style="margin-top: 0.75rem; font-size: 0.75rem;">
-            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+        <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--white-50);">
+            Идея и разработка Кирилл Трубицын
         </p>
     </footer>
 
