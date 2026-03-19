@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loader from SVO — Роман Бевзенко</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #36454f;
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-bottom: 1px solid #d3d3d3;
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav .logo {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #36454f;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #36454f;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #708090;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            nav ul {
+                gap: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            nav a {
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Sections */
+        section {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+        }
+
+        section > div {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Section 1: Hero */
+        #hero {
+            background: #ffffff;
+            padding: 8rem 2rem;
+            text-align: center;
+        }
+
+        .hero-logo {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            font-weight: 700;
+            color: #36454f;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-logo::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #36454f, transparent);
+        }
+
+        .hero-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #36454f;
+            margin-top: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-tagline {
+            font-size: 1.2rem;
+            color: #708090;
+            font-weight: 300;
+            margin-bottom: 3rem;
+        }
+
+        .stats-ribbon {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin: 3rem 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #36454f;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #708090;
+            margin-top: 0.5rem;
+        }
+
+        .scroll-arrow {
+            margin-top: 3rem;
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-logo {
+                font-size: 2.5rem;
+            }
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+            .stats-ribbon {
+                gap: 1.5rem;
+            }
+        }
+
+        /* Section 2: About Author */
+        #about {
+            background: #ffffff;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: #36454f;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .about-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .about-facts {
+            background: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid #36454f;
+        }
+
+        .about-facts h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #36454f;
+        }
+
+        .fact-item {
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 40px;
+            width: 2px;
+            height: calc(100% + 30px);
+            background: #d3d3d3;
+        }
+
+        .timeline-item:last-child::before {
+            display: none;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            background: #36454f;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .timeline-content {
+            flex: 1;
+            padding-top: 2px;
+        }
+
+        .timeline-year {
+            font-weight: 600;
+            color: #36454f;
+            font-size: 0.9rem;
+        }
+
+        .timeline-event {
+            font-size: 0.85rem;
+            color: #708090;
+            margin-top: 0.25rem;
+        }
+
+        .hobbies-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .hobby-card {
+            background: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            border-top: 3px solid #36454f;
+            text-align: center;
+        }
+
+        .hobby-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hobby-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #36454f;
+        }
+
+        .hobby-card p {
+            font-size: 0.85rem;
+            color: #708090;
+        }
+
+        @media (max-width: 768px) {
+            .about-container {
+                grid-template-columns: 1fr;
+            }
+            .hobbies-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section 3: About Channel */
+        #channel {
+            background: #ffffff;
+        }
+
+        .channel-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .info-card {
+            background: #f5f5f5;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+
+        .info-card h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #36454f;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card p {
+            font-size: 0.9rem;
+            color: #708090;
+        }
+
+        .channel-description {
+            background: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 3rem;
+            border-left: 4px solid #36454f;
+        }
+
+        .channel-description p {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .topics-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .topic-pill {
+            background: #36454f;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .channel-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section 4: Growth Dynamics */
+        #growth {
+            background: #ffffff;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .chart-wrapper {
+            background: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            border-top: 3px solid #36454f;
+        }
+
+        .chart-wrapper h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: #36454f;
+        }
+
+        .chart-note {
+            font-size: 0.85rem;
+            color: #708090;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 1024px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section 5: Topic Map */
+        #topicmap {
+            background: #ffffff;
+        }
+
+        .topics-grid-title {
+            font-size: 0.95rem;
+            color: #708090;
+            margin: 2.5rem 0 1.5rem 0;
+            font-weight: 500;
+        }
+
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .topic-card {
+            background: white;
+            border: 1px solid #d3d3d3;
+            border-radius: 8px;
+            padding: 20px;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .topic-card:hover {
+            box-shadow: 0 4px 12px rgba(54, 69, 79, 0.15);
+        }
+
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .topic-header h3 {
+            font-size: 1rem;
+            color: #36454f;
+            margin: 0;
+            font-weight: 600;
+            flex: 1;
+        }
+
+        .topic-arrow {
+            display: inline-block;
+            color: #708090;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .topic-card.expanded .topic-arrow {
+            transform: rotate(90deg);
+        }
+
+        .topic-count {
+            font-size: 0.85rem;
+            color: #708090;
+            margin-top: 0.5rem;
+            display: block;
+        }
+
+        .topic-posts {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 0;
+        }
+
+        .topic-card.expanded .topic-posts {
+            max-height: 2000px;
+            margin-top: 1.5rem;
+        }
+
+        .topic-post {
+            border-left: 3px solid #36454f;
+            padding-left: 15px;
+            margin: 10px 0;
+            color: #36454f;
+        }
+
+        .topic-post-date {
+            font-weight: 600;
+            color: #708090;
+            font-size: 0.9rem;
+        }
+
+        .topic-post-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-top: 0.3rem;
+            color: #36454f;
+        }
+
+        /* Section 6: Evolution */
+        #evolution {
+            background: #ffffff;
+        }
+
+        .timeline-eras {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .era-block {
+            background: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 5px solid #36454f;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .era-block:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(54, 69, 79, 0.1);
+        }
+
+        .era-year {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #36454f;
+            margin-bottom: 0.5rem;
+        }
+
+        .era-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #36454f;
+            margin-bottom: 1.5rem;
+        }
+
+        .era-bullets {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .era-bullets li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.95rem;
+            color: #36454f;
+        }
+
+        .era-bullets li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #708090;
+            font-weight: bold;
+        }
+
+        .era-quote {
+            background: white;
+            padding: 1.5rem;
+            border-left: 3px solid #708090;
+            margin-top: 1.5rem;
+            font-style: italic;
+            color: #708090;
+            font-size: 0.95rem;
+        }
+
+        /* Section 7: Principles */
+        #principles {
+            background: #ffffff;
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .principle-card {
+            background: #f5f5f5;
+            padding: 2rem;
+            border-radius: 8px;
+            border-top: 3px solid #36454f;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .principle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(54, 69, 79, 0.1);
+        }
+
+        .principle-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #36454f;
+        }
+
+        .principle-card p {
+            font-size: 0.9rem;
+            color: #36454f;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 1024px) {
+            .principles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .principles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Section 8: AI Skill */
+        #aiskill {
+            background: #ffffff;
+        }
+
+        .skill-card {
+            background: #f5f5f5;
+            padding: 3rem;
+            border-radius: 8px;
+            border: 1px solid #d3d3d3;
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .skill-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #36454f;
+        }
+
+        .skill-description {
+            font-size: 0.95rem;
+            color: #36454f;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+        }
+
+        .skill-steps {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .skill-steps ol {
+            margin-left: 1.5rem;
+            font-size: 0.9rem;
+            color: #36454f;
+        }
+
+        .skill-steps li {
+            margin-bottom: 1rem;
+        }
+
+        .skill-steps code {
+            background: #e5e5e5;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .skill-button {
+            background: #36454f;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .skill-button:hover {
+            background: #708090;
+        }
+
+        /* Footer */
+        footer {
+            background: #f5f5f5;
+            padding: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #708090;
+            border-top: 1px solid #d3d3d3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            section {
+                padding: 6rem 1.5rem 3rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            nav a {
+                display: none;
+            }
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Loader from SVO</div>
+        <ul>
+            <li><a href="#hero">Главная</a></li>
+            <li><a href="#about">Об авторе</a></li>
+            <li><a href="#channel">О канале</a></li>
+            <li><a href="#growth">Динамика</a></li>
+            <li><a href="#topicmap">Темы</a></li>
+            <li><a href="#evolution">Эволюция</a></li>
+            <li><a href="#principles">Позиции</a></li>
+            <li><a href="#aiskill">AI-скилл</a></li>
+        </ul>
+    </nav>
+
+    <!-- Section 1: Hero -->
+    <section id="hero">
+        <div>
+            <div class="hero-logo">Loader from SVO</div>
+            <div class="hero-subtitle">Telegram-канал профессора Романа Бевзенко</div>
+            <div class="hero-tagline">Право • Практика • Позиция</div>
+
+            <div class="stats-ribbon">
+                <div class="stat-item">
+                    <div class="stat-number">2430+</div>
+                    <div class="stat-label">постов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">40 000+</div>
+                    <div class="stat-label">подписчиков</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">с 2016</div>
+                    <div class="stat-label">года</div>
+                </div>
+            </div>
+
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
+
+    <!-- Section 2: About Author -->
+    <section id="about">
+        <div>
+            <h2 class="section-title">Об авторе</h2>
+
+            <div class="about-container">
+                <!-- Left: Key Facts -->
+                <div class="about-facts">
+                    <h3>Основные вехи</h3>
+                    <div class="fact-item"><strong>Роман Сергеевич Бевзенко</strong></div>
+                    <div class="fact-item">Род. 15 августа 1978, Самара</div>
+                    <div class="fact-item">Доктор юридических наук (РАНХиГС, 2022)</div>
+                    <div class="fact-item">Действительный государственный советник юстиции 2 класса</div>
+                    <div class="fact-item">150+ научных публикаций</div>
+                </div>
+
+                <!-- Right: Timeline -->
+                <div>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">1997</div>
+                                <div class="timeline-event">Помощник адвоката, Самара (студент 3 курса)</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2000</div>
+                                <div class="timeline-event">Юрфак СГЭУ с отличием</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2000–2008</div>
+                                <div class="timeline-event">In-house юрист → вице-президент холдинга, Самара</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2008–2014</div>
+                                <div class="timeline-event">Начальник Управления частного права ВАС РФ</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2005+</div>
+                                <div class="timeline-event">Профессор РШЧП (римское право)</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2014+</div>
+                                <div class="timeline-event">Партнёр «Пепеляев Групп»</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2016</div>
+                                <div class="timeline-event">Создание «Loader from SVO»</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2022</div>
+                                <div class="timeline-event">Защита докторской диссертации</div>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-year">2025+</div>
+                                <div class="timeline-event">Профессор MNU, советник Lansky Ganzger (Вена)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hobbies -->
+            <div class="hobbies-grid">
+                <div class="hobby-card">
+                    <div class="hobby-icon">📷</div>
+                    <h4>Фотография</h4>
+                    <p>Победы 35Photo, reportage.gallery, NFT Limitless Horizons</p>
+                </div>
+                <div class="hobby-card">
+                    <div class="hobby-icon">🎸</div>
+                    <h4>Музыка</h4>
+                    <p>Бас-гитара, рок-группа «Бе$платные ублюдки»</p>
+                </div>
+                <div class="hobby-card">
+                    <div class="hobby-icon">✈️</div>
+                    <h4>Путешествия</h4>
+                    <p>Калифорния, Мадейра, Казахстан, ЮАР</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: About Channel -->
+    <section id="channel">
+        <div>
+            <h2 class="section-title">О канале</h2>
+
+            <div class="channel-info">
+                <div class="info-card">
+                    <h4>Создание</h4>
+                    <p>8 октября 2016 (первый пост)<br>Активен с июля 2019</p>
+                </div>
+                <div class="info-card">
+                    <h4>Происхождение имени</h4>
+                    <p>«Грузчик из Шереметьево» (SVO — код аэропорта)</p>
+                </div>
+                <div class="info-card">
+                    <h4>Формат</h4>
+                    <p>Авторские правовые эссе и анализ</p>
+                </div>
+                <div class="info-card">
+                    <h4>Содержание</h4>
+                    <p>Судебные акты, комментарии к законам, дискуссии</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Section 4: Growth Dynamics -->
+    <section id="growth">
+        <div>
+            <h2 class="section-title">Динамика роста</h2>
+
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <h3>Публикации по годам</h3>
+                    <canvas id="publicationsChart"></canvas>
+                    <div class="chart-note">2026 — данные по март</div>
+                </div>
+
+                <div class="chart-wrapper">
+                    <h3>Рост подписчиков</h3>
+                    <canvas id="subscribersChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Topic Map -->
+    <section id="topicmap">
+        <div>
+            <h2 class="section-title">Тематическая карта</h2>
+
+            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-top: 3px solid #36454f;">
+                <canvas id="topicsChart" style="max-height: 600px;"></canvas>
+            </div>
+
+            <div class="topics-grid-title">Нажмите на тему, чтобы увидеть последние публикации</div>
+
+            <div class="topics-grid" id="topicsGrid">
+                <!-- Topic cards will be generated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 6: Evolution -->
+    <section id="evolution">
+        <div>
+            <h2 class="section-title">Эволюция взглядов</h2>
+
+            <div class="timeline-eras">
+                <!-- Era 1 -->
+                <div class="era-block">
+                    <div class="era-year">2019</div>
+                    <div class="era-title">Начало. Академический оптимизм</div>
+                    <ul class="era-bullets">
+                        <li>Канал возрождён в июле 2019 после трёхлетнего перерыва с первого поста 2016 года</li>
+                        <li>Фокус на вещном праве: негаторные иски, движимое vs недвижимое имущество, регистрация прав</li>
+                        <li>Анализ практики Верховного Суда, критика отказных определений</li>
+                        <li>Интерес к перекрёстному допросу экспертов, судебному нормоконтролю</li>
+                        <li>Надежды на новые кассационные суды общей юрисдикции</li>
+                        <li>Активная публикация на Закон.ру, обсуждение групповых исков</li>
+                    </ul>
+                    <div class="era-quote">«Зря я забросил канал, надо исправляться»</div>
+                </div>
+
+                <!-- Era 2 -->
+                <div class="era-block">
+                    <div class="era-year">2020</div>
+                    <div class="era-title">Конституционный перелом</div>
+                    <ul class="era-bullets">
+                        <li>Поправки к Конституции: право президента отстранять судей высших судов — удар по независимости</li>
+                        <li>Пандемия: мораторий на банкротство, переход к электронному правосудию</li>
+                        <li>Разочарование в «новых» кассационных судах: «Неужели у коллег были надежды?»</li>
+                        <li>Рост политической составляющей: 111 постов о политике (в 2019 было 45)</li>
+                        <li>Критика режима усиливается: связь качества правосудия с политическим режимом</li>
+                        <li>Запуск YouTube-канала, первые стримы, рост до 15 000 подписчиков</li>
+                    </ul>
+                    <div class="era-quote">«До тех пор, пока в России не будет настоящего Верховного Суда, который олицетворял бы подлинную судебную власть, а не был бы бледной декорацией»</div>
+                </div>
+
+                <!-- Era 3 -->
+                <div class="era-block">
+                    <div class="era-year">2021–2022</div>
+                    <div class="era-title">Война и право</div>
+                    <ul class="era-bullets">
+                        <li>Февраль 2022: санкции, уход иностранных компаний, валютные ограничения</li>
+                        <li>Резкий рост политических постов: 110 → 139 за год</li>
+                        <li>Проблема «брошенных» иностранных активов, критика законопроекта о внешнем управлении</li>
+                        <li>Тотальный мораторий на банкротство 2022: анализ последствий</li>
+                        <li>Маркировка рекламы в интернете: новое регулирование</li>
+                        <li>Становление позиции: «Авторитарный режим неизбежно порождает дефектное правоприменение»</li>
+                        <li>Защита докторской диссертации (май 2022)</li>
+                        <li>Канал вырос до 25 000 подписчиков</li>
+                    </ul>
+                    <div class="era-quote">«Качество правосудия определяется не количеством инстанций, а политическим режимом»</div>
+                </div>
+
+                <!-- Era 4 -->
+                <div class="era-block">
+                    <div class="era-year">2023–2024</div>
+                    <div class="era-title">Зрелая система</div>
+                    <ul class="era-bullets">
+                        <li>Систематизация вещного права: глубокие эссе о единстве земли и строений, публичной достоверности реестра</li>
+                        <li>Становление главным редактором ШОРТРИДа (с сентября 2021, полноценная работа с 2023)</li>
+                        <li>30 000 подписчиков (ноябрь 2023), обсуждение windfall tax, конфискации</li>
+                        <li>Запуск Бусти: платные лекции по праву недвижимости, юридическому письму</li>
+                        <li>Баланс: 40% контента — право, 37% — политика/общество</li>
+                        <li>Обсуждение цифрового рубля, NFT, авторских прав на AI-генерированные изображения</li>
+                    </ul>
+                    <div class="era-quote">«Я до сих пор удивляюсь, как юридический канал набирает такую аудиторию. Ведь я не журналист, актёр или певец, а просто юрист»</div>
+                </div>
+
+                <!-- Era 5 -->
+                <div class="era-block">
+                    <div class="era-year">2025–2026</div>
+                    <div class="era-title">Международный этап</div>
+                    <ul class="era-bullets">
+                        <li>Уход из российских вузов, переход в MNU (Казахстан) и Lansky Ganzger (Вена)</li>
+                        <li>40 000 подписчиков (сентябрь 2025)</li>
+                        <li>Активный курс на Бусти: «Частноправовые доктрины» (6 лекций), «Введение в право недвижимости»</li>
+                        <li>Реформа ГК РФ: новые нормы о недвижимых вещах (главы 6.1, 17.1, пар. 2 гл. 16)</li>
+                        <li>Преподавание М-Логос: вещное и договорное право, недвижимость</li>
+                        <li>Политические оценки: «2026 будет хуже 2025 из-за новых ограничений»</li>
+                        <li>Второй баттл с AI-юристом (сентябрь 2025)</li>
+                        <li>Взгляд профессора в эмиграции на российское право</li>
+                    </ul>
+                    <div class="era-quote">«Разговор о судебной реформе имеет смысл только в контексте политических преобразований»</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Principles -->
+    <section id="principles">
+        <div>
+            <h2 class="section-title">Принципиальные позиции</h2>
+
+            <div class="principles-grid">
+                <div class="principle-card">
+                    <h3>О судебной системе</h3>
+                    <p>Верховный Суд не является подлинной судебной властью. Он работает как бюрократическая инстанция. Судебная реформа невозможна без политической реформы. Назначение новых судей из той же среды не приведёт к изменению качества правосудия.</p>
+                </div>
+
+                <div class="principle-card">
+                    <h3>О недвижимости</h3>
+                    <p>Здание — составная часть земельного участка, а не отдельная вещь. Superficies solo cedit. Российская регистрационная система не обеспечивает подлинной публичной достоверности реестра. Добросовестный приобретатель недвижимости защищён недостаточно.</p>
+                </div>
+
+                <div class="principle-card">
+                    <h3>Об обязательствах</h3>
+                    <p>Институт обеспечения обязательств нуждается в модернизации по европейскому образцу. Суды слишком часто снижают неустойку по ст. 333 ГК, подрывая договорную дисциплину. Поручительство — один из важнейших и наименее понимаемых судами институтов.</p>
+                </div>
+
+                <div class="principle-card">
+                    <h3>О праве и политике</h3>
+                    <p>Качество правосудия определяется политическим режимом. Авторитарный режим неизбежно порождает дефектное правоприменение. Право и политика неразделимы.</p>
+                </div>
+
+                <div class="principle-card">
+                    <h3>Об образовании</h3>
+                    <p>Юридическое образование в России нуждается в глубокой реформе. Постоянно читайте. Стремитесь находить профессиональную среду, где есть люди, знающие больше вас.</p>
+                </div>
+
+                <div class="principle-card">
+                    <h3>О сравнительном праве</h3>
+                    <p>Без понимания германской, французской и англо-американской правовых традиций невозможно адекватно развивать российское частное право. Необходимо обращаться к дореволюционной цивилистике и римскому праву.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: AI Skill -->
+    <section id="aiskill">
+        <div>
+            <h2 class="section-title">AI-скилл</h2>
+
+            <div class="skill-card">
+                <h2>Консультант «Бевзенко»</h2>
+                <p class="skill-description">
+                    AI-скилл для Claude, содержащий 550 наиболее содержательных постов Бевзенко за 2016–2026. 11 тематических баз знаний. Ответы генерируются в стиле автора: прямые оценки, доктринальная глубина, сравнительно-правовой контекст.
+                </p>
+
+                <div class="skill-steps">
+                    <ol>
+                        <li>Скачайте файл <code>bevzenko-consult.skill</code></li>
+                        <li>Установите в Claude Desktop → Settings → Skills</li>
+                        <li>Задавайте вопросы по российскому праву</li>
+                    </ol>
+                </div>
+
+                <button class="skill-button">Скачать скилл</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Данные собраны и проанализированы в марте 2026 года • На основе экспорта Telegram-канала «Loader from SVO»</p>
+    </footer>
+
+    <script>
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Initialize charts after DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chart 1: Publications by year
+            const pubCtx = document.getElementById('publicationsChart');
+            if (pubCtx) {
+                new Chart(pubCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+                        datasets: [{
+                            label: 'Публикации',
+                            data: [224, 366, 276, 287, 370, 401, 416, 89],
+                            backgroundColor: '#36454f',
+                            borderRadius: 4,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                border: { display: false },
+                                grid: { color: '#e5e5e5' },
+                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                            },
+                            x: {
+                                border: { display: false },
+                                grid: { display: false },
+                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart 2: Subscribers growth
+            const subCtx = document.getElementById('subscribersChart');
+            if (subCtx) {
+                new Chart(subCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Июл 2019', 'Янв 2021', 'Май 2021', 'Ноя 2022', 'Ноя 2023', 'Сен 2025', 'Мар 2026'],
+                        datasets: [{
+                            label: 'Подписчики',
+                            data: [1000, 15000, 16000, 25000, 30000, 40000, 43000],
+                            borderColor: '#36454f',
+                            backgroundColor: 'rgba(54, 69, 79, 0.1)',
+                            pointBackgroundColor: '#708090',
+                            pointBorderColor: '#36454f',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                border: { display: false },
+                                grid: { color: '#e5e5e5' },
+                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                            },
+                            x: {
+                                border: { display: false },
+                                grid: { display: false },
+                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chart 3: Topic map (horizontal bar)
+            const topicsCtx = document.getElementById('topicsChart');
+            if (topicsCtx) {
+                const topicLabels = [
+                    'Политика и общество',
+                    'Вещное право',
+                    'Обязательственное право',
+                    'Судебная практика ВС',
+                    'Судебная реформа',
+                    'Книги и публикации',
+                    'Уголовное право',
+                    'Юридическое образование',
+                    'Законодательные изменения',
+                    'Конституционное право',
+                    'Международное право',
+                    'Банкротство'
+                ];
+                const topicData = [908, 668, 549, 518, 474, 369, 328, 252, 166, 145, 143, 100];
+
+                // Create gradient palette
+                const colors = [
+                    '#36454f', '#3f4f5f', '#4a586d', '#54627b', '#5e6c89',
+                    '#687697', '#7280a5', '#7c8ab3', '#8694c1', '#909ecf',
+                    '#9aa8dd', '#a0aab0'
+                ];
+
+                new Chart(topicsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: topicLabels,
+                        datasets: [{
+                            label: 'Количество постов',
+                            data: topicData,
+                            backgroundColor: colors,
+                            borderRadius: 4,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                border: { display: false },
+                                grid: { color: '#e5e5e5' },
+                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                            },
+                            y: {
+                                border: { display: false },
+                                grid: { display: false },
+                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif", size: 11 } }
+                            }
+                        }
+                    }
+                });
+
+                // Initialize Topic Cards
+                const topicPosts = {
+                    "Политика и общество": {
+                        count: 908,
+                        posts: [
+                            {date: "2026-03-11", text: "Прочитал в новостях, что минэк разработал законопроект о введении специальной исковой давности по искам об оспаривании сделок по приватизации. Они составят 3 года с момента, когда о нарушении узнал прокурор..."},
+                            {date: "2026-03-09", text: "Ну хоть кто-то сделал это первым! United Airlines запретили пассажирам слушать музыку и смотреть видео без наушников. Санкция — высадка в ближайшем аэропорту..."},
+                            {date: "2026-03-08", text: "Если меня спросят, кто лучший судья Конституционного суда в истории России, я, не задумываясь, отвечу — Тамара Георгиевна Морщакова..."},
+                            {date: "2026-03-05", text: "В новостях пишут, что ФАС считает, что распространение рекламы в ТГ нарушает закон о рекламе. Что ж, надо бить легистов их же оружием — а именно дурно написанными нормами законов..."},
+                            {date: "2026-03-05", text: "В определении гражд.коллегии верх.суда N 5-КГ25-141-К2 содержится вывод о том, что решение суда общей юрисдикции, которым с А взыскан долг в пользу В, может быть обжаловано С..."}
+                        ]
+                    },
+                    "Вещное право и недвижимость": {
+                        count: 668,
+                        posts: [
+                            {date: "2026-03-04", text: "На моем бусти канале выложена последняя, третья лекция из небольшого курса «Введение в право недвижимости». Она посвящена теории государственной регистрации недвижимости..."},
+                            {date: "2026-03-02", text: "Давно не писал здесь о ШОРТРИДе, а там уже собралось много статей, которые вы наверняка захотите почитать: Закон о запрете иностранных слов: что меняется с 1 марта 2026 года?..."},
+                            {date: "2026-02-26", text: "Как и просили добрые читатели, добавил в текст в комментария к делу о квалификации долевого участия фрагмент о том, почему «ахаляй-махаляй» иски о признании права собственности — это абсолютное зло..."},
+                            {date: "2026-02-25", text: "На моем бусти-канале выложена вторая лекция из небольшого курса «Введение в право недвижимости»..."},
+                            {date: "2026-02-25", text: "Наша любимица, неутомимый поставщик тем для постов в этом канале, симпатичнейшая гражд.коллегия верх.суда в определении № 127-КГ25-29-К4 берётся за важное дело..."}
+                        ]
+                    },
+                    "Обязательственное право": {
+                        count: 549,
+                        posts: [
+                            {date: "2026-03-13", text: "Мне сегодня в ТГ написал какой-то забавный человек с американским номером. Предложил купить мой ТГ ник за почти 6 тыс. долларов с оплатой в TON..."},
+                            {date: "2026-03-09", text: "United Airlines запретили пассажирам слушать музыку без наушников. Санкция — высадка в ближайшем аэропорту (с возмещением стоимости посадки и взлета)..."},
+                            {date: "2026-03-04", text: "На бусти канале выложена третья лекция из курса «Введение в право недвижимости». Посвящена теории государственной регистрации недвижимости..."},
+                            {date: "2026-03-03", text: "Есть известная правовая проблема практики обязательственных споров. Стороне по договору причинены убытки. Если она хочет их взыскать с контрагента, она может предъявить иск о нарушении договора..."},
+                            {date: "2026-02-26", text: "Добавил в комментарий к делу о квалификации долевого участия фрагмент о том, почему иски о признании права собственности — это абсолютное зло..."}
+                        ]
+                    },
+                    "Судебная практика ВС": {
+                        count: 518,
+                        posts: [
+                            {date: "2026-03-11", text: "Минэк разработал законопроект о введении специальной исковой давности по искам об оспаривании сделок по приватизации. 3 года с момента, когда о нарушении узнал прокурор..."},
+                            {date: "2026-03-10", text: "Послушайте, а что-то ничего не слышно про бывшего судью верх.суда Момотова, верного птенца гнезда покойного председателя Лебедева. Российская Федерация обезжирила его на 9 млрд..."},
+                            {date: "2026-03-08", text: "Лучший судья Конституционного суда в истории России — Тамара Георгиевна Морщакова. Из трех председателей верх.суда лучшей была женщина..."},
+                            {date: "2026-03-05", text: "В определении гражд.коллегии верх.суда N 5-КГ25-141-К2 содержится вывод о том, что решение суда может быть обжаловано кредитором в банкротстве..."},
+                            {date: "2026-03-03", text: "Есть известная правовая проблема практики обязательственных споров — конкуренция контрактных и деликтных исков..."}
+                        ]
+                    },
+                    "Судебная реформа и процесс": {
+                        count: 474,
+                        posts: [
+                            {date: "2026-03-11", text: "Минэк разработал законопроект о специальной исковой давности по приватизационным искам. 3 года с момента, когда прокурор узнал о нарушении..."},
+                            {date: "2026-03-10", text: "Ничего не слышно про бывшего судью верх.суда Момотова. Российская Федерация обезжирила его на 9 млрд. рублей..."},
+                            {date: "2026-03-08", text: "Лучший судья КС — Морщакова. Из трех председателей верх.суда лучшей была женщина..."},
+                            {date: "2026-03-05", text: "Определение гражд.коллегии: решение суда общей юрисдикции может быть обжаловано кредитором в рамках банкротства..."},
+                            {date: "2026-03-03", text: "Конкуренция контрактных и деликтных исков — известная правовая проблема практики обязательственных споров..."}
+                        ]
+                    },
+                    "Книги и публикации": {
+                        count: 369,
+                        posts: [
+                            {date: "2026-03-17", text: "Закончил статью о концепции справедливой цены в частном праве. Писал её полтора года. Получился большой и насыщенный текст, который скоро выйдет в журнальном формате..."},
+                            {date: "2026-03-17", text: "20 марта Ведомости в Москве проводят ежегодный юридический форум. Организаторы подготовили интересную программу, и я согласился поучаствовать в качестве модератора..."},
+                            {date: "2026-02-26", text: "Добавил в текст комментария к делу о квалификации долевого участия фрагмент о том, почему иски о признании права собственности — абсолютное зло..."},
+                            {date: "2026-02-21", text: "Роскомнадзор планирует полностью заблокировать телеграм. Наши люди за четыре года приобрели серьёзные навыки обхода блокировок..."},
+                            {date: "2026-02-18", text: "Мой добрый товарищ Николай Аверченко собирает библиографию причудливых юридических публикаций в канале «Тонкое право»..."}
+                        ]
+                    },
+                    "Уголовное право": {
+                        count: 328,
+                        posts: [
+                            {date: "2026-03-10", text: "Ничего не слышно про бывшего судью верх.суда Момотова. Российская Федерация обезжирила его на 9 млрд. рублей..."},
+                            {date: "2026-02-25", text: "Не такова симпатичнейшая гражд.коллегия! Вместо того, чтобы чётко разъяснить соотношение п. 2 ст. 455 ГК и ФЗ об участии в долевом строительстве..."},
+                            {date: "2026-02-23", text: "В связи с введением обязательной нотариальной формы договора дарения недвижимости приобретает практическое значение вопрос о продаже по символической цене..."},
+                            {date: "2026-02-17", text: "Гражд.коллегия верх.суда не устает удивлять. Дело № 83-КГ25-2-К1, простейший вопрос по исковой давности по иску о признании сделки недействительной..."},
+                            {date: "2025-12-18", text: "Ведомости попросили меня дать комментарий по поводу постановления КС N 46-П об арестах имущества в уголовном деле и его судьбе при банкротстве..."}
+                        ]
+                    },
+                    "Юридическое образование": {
+                        count: 252,
+                        posts: [
+                            {date: "2026-03-04", text: "На бусти канале выложена третья лекция из курса «Введение в право недвижимости». Посвящена теории государственной регистрации недвижимости..."},
+                            {date: "2026-03-01", text: "Последние новости из российских университетов укрепили меня во мнении, что высшая школа не должна быть государственной. Публичной — да, но не государственной..."},
+                            {date: "2026-02-25", text: "На бусти-канале выложена вторая лекция из курса «Введение в право недвижимости»..."},
+                            {date: "2026-02-24", text: "С удовольствием прочитал интервью нового ректора РГУПа Ольги Тисен в Ведомостях. Она говорит о том, что Университет правосудия им. Лебедева..."},
+                            {date: "2026-02-17", text: "На бусти канале началась выкладка курса из трёх лекций — вводного в изучение права недвижимости. Первая лекция — эволюция правовых представлений о недвижимой вещи..."}
+                        ]
+                    },
+                    "Законодательные изменения": {
+                        count: 166,
+                        posts: [
+                            {date: "2026-03-11", text: "Минэк разработал законопроект о специальной исковой давности по приватизационным искам — 3 года с момента, когда прокурор узнал о нарушении..."},
+                            {date: "2026-02-14", text: "Коллега Ангелина Севостьянова из Школы права Либерфорд записала беседу с Людмилой Александровной Новоселовой — глубоким юристом с интересным профессиональным путём..."},
+                            {date: "2026-01-21", text: "Депутат Делягин внёс в парламент законопроект, который — по его мнению — решит проблему, выявленную делом Долиной. Текст получился интеллектуально невесомый..."},
+                            {date: "2025-12-30", text: "На Бусти выложена третья лекция из спецкурса «Частноправовые доктрины». Посвящена проблеме ограниченных вещных прав..."},
+                            {date: "2025-11-26", text: "На бусти доступна лекция-комментарий к главам 6.1, 17.1 и новому пар. 2 главы 16 ГК — новые нормы ГК о недвижимых вещах..."}
+                        ]
+                    },
+                    "Конституционное право": {
+                        count: 145,
+                        posts: [
+                            {date: "2026-03-08", text: "Лучший судья Конституционного суда в истории России — Тамара Георгиевна Морщакова..."},
+                            {date: "2026-03-05", text: "ФАС считает, что распространение рекламы в ТГ нарушает закон о рекламе. Надо бить легистов их же оружием — дурно написанными нормами законов..."},
+                            {date: "2026-02-18", text: "Николай Аверченко собирает библиографию причудливых юридических публикаций в канале «Тонкое право»..."},
+                            {date: "2026-02-18", text: "Один из важных греческих юридических терминов это ένα σύνταγμα (конституция). Я никогда не задумывался о его этимологии..."},
+                            {date: "2026-02-02", text: "Гражд.коллегия верх.суда вернулась к вопросу о компетенции третейских судов в сфере недвижимости. Был договор купли-продажи доли в квартире с третейской оговоркой..."}
+                        ]
+                    },
+                    "Международное право": {
+                        count: 143,
+                        posts: [
+                            {date: "2026-02-18", text: "Николай Аверченко собирает библиографию причудливых юридических публикаций в канале «Тонкое право»..."},
+                            {date: "2026-02-10", text: "Некоторые читатели увидели в тексте про «первое слово дороже второго» проявление вечной русской контраверзы — якобы нам нравится всё иностранное..."},
+                            {date: "2026-02-05", text: "В современном греческом есть слово εμπορικό (торговый, коммерческий). Оно связано с историей торгового права..."},
+                            {date: "2026-01-15", text: "Погрузился в проблематику уступки требований по символической цене — и тут суд округа Колумбия (США) выносит отличное решение..."},
+                            {date: "2025-12-23", text: "Внимание! Это решение — фейк! Но очень забавный. Дело Долиной в свирепом американском суде. Коллега Михаил Галятин поделился любопытным актом..."}
+                        ]
+                    },
+                    "Банкротство": {
+                        count: 100,
+                        posts: [
+                            {date: "2026-03-05", text: "В определении гражд.коллегии верх.суда N 5-КГ25-141-К2 — вывод о том, что решение суда может быть обжаловано кредитором в банкротстве..."},
+                            {date: "2026-02-18", text: "Николай Аверченко собирает библиографию причудливых юридических публикаций..."},
+                            {date: "2026-02-13", text: "Нужна помощь дорогих читателей. Не могу найти практику по вопросу: дело о банкротстве юрлица, предъявлено требование о субсидиарной ответственности..."},
+                            {date: "2025-12-18", text: "Ведомости попросили комментарий по постановлению КС N 46-П — аресты имущества в уголовном деле и судьба при банкротстве..."},
+                            {date: "2025-12-12", text: "На бусти — запись выступления о проблемах супружеской собственности: три режима (раздельный, совместный, отложенная общность)..."}
+                        ]
+                    }
+                };
+
+                function truncateText(text, maxLength) {
+                    if (text.length > maxLength) {
+                        return text.substring(0, maxLength) + '...';
+                    }
+                    return text;
+                }
+
+                const topicsGrid = document.getElementById('topicsGrid');
+                if (topicsGrid) {
+                    Object.keys(topicPosts).forEach(topic => {
+                        const topicData = topicPosts[topic];
+
+                        const card = document.createElement('div');
+                        card.className = 'topic-card';
+                        card.innerHTML = `
+                            <div class="topic-header">
+                                <h3>${topic}</h3>
+                                <span class="topic-arrow">▸</span>
+                            </div>
+                            <span class="topic-count">${topicData.count} постов</span>
+                            <div class="topic-posts">
+                                ${topicData.posts.map(post => `
+                                    <div class="topic-post">
+                                        <div class="topic-post-date">${post.date}</div>
+                                        <div class="topic-post-text">${truncateText(post.text, 200)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+
+                        card.addEventListener('click', function() {
+                            this.classList.toggle('expanded');
+                        });
+
+                        topicsGrid.appendChild(card);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
