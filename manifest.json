@@ -1,0 +1,28 @@
+{
+  "name": "Loader from SVO — Роман Бевзенко",
+  "short_name": "Loader from SVO",
+  "description": "AI-скилл на основе 10 лет публикаций Telegram-канала профессора Романа Бевзенко",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#36454f",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
