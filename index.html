@@ -1487,36 +1487,62 @@
         let pencilSrc, pencilGain;
         let swashSrc, swashGain;
 
+        let audioReady = false;
+        let pencilBuf = null; /* pre-built noise buffer, reusable */
+
         function initAudio() {
             try {
                 ac = new (window.AudioContext || window.webkitAudioContext)();
-                /* resume() must be called synchronously inside the user-gesture
-                   call stack — otherwise iOS/Safari will ignore it. */
+                /* resume() MUST be called synchronously in the user-gesture
+                   call stack — iOS/Safari requires this. */
                 ac.resume();
                 masterGain = ac.createGain();
                 masterGain.gain.value = 1;
                 masterGain.connect(ac.destination);
+
+                /* On mobile, AudioContext may still be 'suspended' here.
+                   We listen for the state change to know when audio is truly ready.
+                   On desktop it's usually 'running' immediately. */
+                if (ac.state === 'running') {
+                    audioReady = true;
+                } else {
+                    ac.onstatechange = function() {
+                        if (ac.state === 'running') {
+                            audioReady = true;
+                            /* If pencil chain wasn't built yet, build it now */
+                            if (!pencilSrc && pencilBuf) {
+                                startPencilSource();
+                            }
+                        }
+                    };
+                }
             } catch(e) {
                 ac = null;
             }
         }
 
-        /* Pencil on paper: pink-ish noise → higher bandpass → bright shelf */
-        function buildPencilChain() {
+        /* Pre-generate the noise buffer (cheap CPU, no AudioContext state needed) */
+        function buildPencilBuffer() {
             if (!ac) return;
             const sr  = ac.sampleRate;
             const len = sr * 3;
-            const buf = ac.createBuffer(1, len, sr);
-            const d   = buf.getChannelData(0);
-            /* Lighter noise: less brownian smoothing → more high-freq content */
+            pencilBuf = ac.createBuffer(1, len, sr);
+            const d   = pencilBuf.getChannelData(0);
             let v = 0;
             for (let i = 0; i < len; i++) {
                 const white = Math.random() * 2 - 1;
                 v = (v + 0.04 * white) / 1.04;
                 d[i] = v * 2.8 + white * 0.3;
             }
+        }
+
+        /* Wire up and start the pencil audio source.
+           Only call when ac.state === 'running'. */
+        function startPencilSource() {
+            if (!ac || !pencilBuf || pencilSrc) return;
+
             pencilSrc = ac.createBufferSource();
-            pencilSrc.buffer = buf;
+            pencilSrc.buffer = pencilBuf;
             pencilSrc.loop = true;
 
             const bp = ac.createBiquadFilter();
@@ -1533,6 +1559,15 @@
 
             pencilSrc.connect(bp).connect(hp).connect(sh).connect(pencilGain).connect(masterGain);
             pencilSrc.start();
+        }
+
+        /* Build buffer + start source if context is already running */
+        function buildPencilChain() {
+            buildPencilBuffer();
+            if (audioReady) {
+                startPencilSource();
+            }
+            /* Otherwise, onstatechange will call startPencilSource() */
         }
 
         function pencilOn()  { if (pencilGain && ac) pencilGain.gain.setTargetAtTime(0.38, ac.currentTime, 0.02); }
