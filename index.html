@@ -1,12 +1,29 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+<!--
+   ______                            __
+  / ____/___  ____ ___  ____  __  __/ /____  _____
+ / /   / __ \/ __ `__ \/ __ \/ / / / __/ _ \/ ___/
+/ /___/ /_/ / / / / / / /_/ / /_/ / /_/  __/ /
+\____/\____/_/ /_/ /_/ .___/\__,_/\__/\___/_/
+                    /_/
+        Created with Perplexity Computer
+        https://www.perplexity.ai/computer
+-->
+
+<!-- Perplexity Computer Attribution — SEO Meta Tags -->
+<meta name="generator" content="Perplexity Computer">
+<meta name="author" content="Perplexity Computer">
+<meta property="og:see_also" content="https://www.perplexity.ai/computer">
+<link rel="author" href="https://www.perplexity.ai/computer">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loader from SVO — Роман Бевзенко</title>
 
     <meta name="description" content="AI-скилл на основе 10 лет публикаций Telegram-канала профессора Романа Бевзенко. Право, практика, позиция.">
-    <meta name="theme-color" content="#36454f">
+    <meta name="theme-color" content="#0a1628">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Loader from SVO">
@@ -21,6 +38,20 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        :root {
+            --navy-deep: #0a1628;
+            --navy-mid: #132240;
+            --navy-light: #1a3058;
+            --cream: #f0ece4;
+            --gold: #c9a84c;
+            --gold-glow: rgba(201, 168, 76, 0.25);
+            --white-80: rgba(255, 255, 255, 0.8);
+            --white-50: rgba(255, 255, 255, 0.5);
+            --white-20: rgba(255, 255, 255, 0.2);
+            --white-10: rgba(255, 255, 255, 0.1);
+            --white-06: rgba(255, 255, 255, 0.06);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -29,13 +60,50 @@
 
         html {
             scroll-behavior: smooth;
+            scroll-padding-top: 80px;
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            color: #36454f;
-            background-color: #ffffff;
+            color: var(--white-80);
+            background-color: var(--navy-deep);
             line-height: 1.6;
+            position: relative;
+        }
+
+        /* Fabric texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.035;
+            background:
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255,255,255,0.03) 2px,
+                    rgba(255,255,255,0.03) 4px
+                ),
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255,255,255,0.02) 2px,
+                    rgba(255,255,255,0.02) 4px
+                );
+        }
+
+        /* Section dividers */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--white-10), transparent);
+            margin: 0;
         }
 
         /* Navigation */
@@ -44,20 +112,22 @@
             top: 0;
             left: 0;
             right: 0;
-            background: white;
-            border-bottom: 1px solid #d3d3d3;
+            background: linear-gradient(180deg, rgba(10, 22, 40, 0.95) 0%, rgba(10, 22, 40, 0.8) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             padding: 1rem 2rem;
             z-index: 1000;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid var(--white-10);
         }
 
         nav .logo {
             font-family: 'Dancing Script', cursive;
             font-size: 1.5rem;
             font-weight: 700;
-            color: #36454f;
+            color: var(--cream);
         }
 
         nav ul {
@@ -70,28 +140,20 @@
 
         nav a {
             text-decoration: none;
-            color: #36454f;
+            color: var(--white-50);
             font-size: 0.9rem;
             font-weight: 500;
             transition: color 0.3s ease;
+            letter-spacing: 0.02em;
         }
 
         nav a:hover {
-            color: #708090;
+            color: var(--gold);
         }
 
         @media (max-width: 768px) {
-            nav {
-                flex-direction: column;
-                gap: 1rem;
-            }
             nav ul {
-                gap: 1rem;
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-            nav a {
-                font-size: 0.8rem;
+                display: none;
             }
         }
 
@@ -103,15 +165,20 @@
             align-items: center;
             justify-content: center;
             opacity: 0;
-            transition: opacity 0.8s ease;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            position: relative;
+            z-index: 1;
         }
 
         section.visible {
             opacity: 1;
+            transform: translateY(0);
         }
 
         #hero {
             opacity: 1;
+            transform: translateY(0);
         }
 
         section > div {
@@ -119,48 +186,62 @@
             width: 100%;
         }
 
-        /* Section 1: Hero */
+        /* ===== Section 1: Hero ===== */
         #hero {
-            background: #ffffff;
+            background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy-mid) 100%);
             padding: 8rem 2rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Stitched frame effect */
+        #hero::after {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            bottom: 24px;
+            border: 2px dashed var(--white-20);
+            border-radius: 8px;
+            pointer-events: none;
         }
 
         .hero-logo {
             font-family: 'Dancing Script', cursive;
             font-size: 4rem;
             font-weight: 700;
-            color: #36454f;
+            color: var(--cream);
             margin-bottom: 0.5rem;
             position: relative;
             display: inline-block;
         }
 
-        .hero-logo::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #36454f, transparent);
+        /* SVG swash under hero title */
+        .hero-swash {
+            display: block;
+            margin: 0.5rem auto 0;
+            width: 220px;
+            height: 24px;
         }
 
         .hero-subtitle {
             font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
             font-weight: 600;
-            color: #36454f;
+            color: var(--cream);
             margin-top: 2rem;
             margin-bottom: 0.5rem;
         }
 
         .hero-tagline {
             font-size: 1.2rem;
-            color: #708090;
+            color: var(--gold);
             font-weight: 300;
             margin-bottom: 3rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
         }
 
         .stats-ribbon {
@@ -178,18 +259,22 @@
         .stat-number {
             font-size: 2rem;
             font-weight: 700;
-            color: #36454f;
+            color: var(--cream);
         }
 
         .stat-label {
             font-size: 0.9rem;
-            color: #708090;
+            color: var(--gold);
             margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 500;
         }
 
         .scroll-arrow {
             margin-top: 3rem;
             font-size: 2rem;
+            color: var(--white-50);
             animation: bounce 2s infinite;
         }
 
@@ -205,21 +290,40 @@
             .hero-subtitle {
                 font-size: 1.3rem;
             }
+            .hero-swash {
+                width: 160px;
+            }
             .stats-ribbon {
                 gap: 1.5rem;
             }
+            #hero::after {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+            }
         }
 
-        /* Section 2: About Author */
+        /* ===== Section 2: About Author ===== */
         #about {
-            background: #ffffff;
+            background: var(--navy-deep);
+        }
+
+        .section-eyebrow {
+            font-size: 0.75rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0.75rem;
         }
 
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: 2.5rem;
             font-weight: 600;
-            color: #36454f;
+            color: var(--cream);
             margin-bottom: 3rem;
             text-align: center;
         }
@@ -232,17 +336,29 @@
         }
 
         .about-facts {
-            background: #f5f5f5;
+            background: var(--navy-mid);
             padding: 2rem;
             border-radius: 8px;
-            border-left: 4px solid #36454f;
+            border-left: 4px solid var(--gold);
+            border: 1px solid var(--white-10);
+            border-left: 4px solid var(--gold);
         }
 
         .about-facts h3 {
             font-family: 'Playfair Display', serif;
             font-size: 1.3rem;
             margin-bottom: 1.5rem;
-            color: #36454f;
+            color: var(--cream);
+        }
+
+        .about-facts p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--white-80);
+        }
+
+        .about-facts strong {
+            color: var(--cream);
         }
 
         .fact-item {
@@ -271,7 +387,7 @@
             top: 40px;
             width: 2px;
             height: calc(100% + 30px);
-            background: #d3d3d3;
+            background: var(--white-10);
         }
 
         .timeline-item:last-child::before {
@@ -281,7 +397,7 @@
         .timeline-dot {
             width: 12px;
             height: 12px;
-            background: #36454f;
+            background: var(--gold);
             border-radius: 50%;
             margin-top: 6px;
             flex-shrink: 0;
@@ -296,60 +412,25 @@
 
         .timeline-year {
             font-weight: 600;
-            color: #36454f;
+            color: var(--gold);
             font-size: 0.9rem;
         }
 
         .timeline-event {
             font-size: 0.85rem;
-            color: #708090;
+            color: var(--white-50);
             margin-top: 0.25rem;
-        }
-
-        .hobbies-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .hobby-card {
-            background: #f5f5f5;
-            padding: 2rem;
-            border-radius: 8px;
-            border-top: 3px solid #36454f;
-            text-align: center;
-        }
-
-        .hobby-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        .hobby-card h4 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            color: #36454f;
-        }
-
-        .hobby-card p {
-            font-size: 0.85rem;
-            color: #708090;
         }
 
         @media (max-width: 768px) {
             .about-container {
                 grid-template-columns: 1fr;
             }
-            .hobbies-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
-        /* Section 3: About Channel */
+        /* ===== Section 3: About Channel ===== */
         #channel {
-            background: #ffffff;
+            background: var(--navy-deep);
         }
 
         .channel-info {
@@ -363,51 +444,29 @@
         }
 
         .info-card {
-            background: #f5f5f5;
+            background: var(--navy-mid);
             padding: 1.5rem;
             border-radius: 8px;
+            border: 1px solid var(--white-10);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
         .info-card h4 {
             font-family: 'Playfair Display', serif;
             font-size: 0.95rem;
             font-weight: 600;
-            color: #36454f;
+            color: var(--gold);
             margin-bottom: 0.5rem;
         }
 
         .info-card p {
             font-size: 0.9rem;
-            color: #708090;
-        }
-
-        .channel-description {
-            background: #f5f5f5;
-            padding: 2rem;
-            border-radius: 8px;
-            margin-bottom: 3rem;
-            border-left: 4px solid #36454f;
-        }
-
-        .channel-description p {
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-
-        .topics-pills {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .topic-pill {
-            background: #36454f;
-            color: white;
-            padding: 0.6rem 1.2rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
+            color: var(--white-80);
         }
 
         @media (max-width: 768px) {
@@ -416,9 +475,9 @@
             }
         }
 
-        /* Section 4: Growth Dynamics */
+        /* ===== Section 4: Growth Dynamics ===== */
         #growth {
-            background: #ffffff;
+            background: var(--navy-deep);
         }
 
         .charts-container {
@@ -428,22 +487,23 @@
         }
 
         .chart-wrapper {
-            background: #f5f5f5;
+            background: var(--navy-mid);
             padding: 2rem;
             border-radius: 8px;
-            border-top: 3px solid #36454f;
+            border: 1px solid var(--white-10);
+            border-top: 3px solid var(--gold);
         }
 
         .chart-wrapper h3 {
             font-family: 'Playfair Display', serif;
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
-            color: #36454f;
+            color: var(--cream);
         }
 
         .chart-note {
             font-size: 0.85rem;
-            color: #708090;
+            color: var(--white-50);
             margin-top: 1rem;
         }
 
@@ -453,14 +513,22 @@
             }
         }
 
-        /* Section 5: Topic Map */
+        /* ===== Section 5: Topic Map ===== */
         #topicmap {
-            background: #ffffff;
+            background: var(--navy-deep);
+        }
+
+        .topics-chart-container {
+            background: var(--navy-mid);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--white-10);
+            border-top: 3px solid var(--gold);
         }
 
         .topics-grid-title {
             font-size: 0.95rem;
-            color: #708090;
+            color: var(--white-50);
             margin: 2.5rem 0 1.5rem 0;
             font-weight: 500;
         }
@@ -479,16 +547,17 @@
         }
 
         .topic-card {
-            background: white;
-            border: 1px solid #d3d3d3;
+            background: var(--navy-mid);
+            border: 1px solid var(--white-10);
             border-radius: 8px;
             padding: 20px;
             cursor: pointer;
-            transition: box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .topic-card:hover {
-            box-shadow: 0 4px 12px rgba(54, 69, 79, 0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
         .topic-header {
@@ -500,7 +569,7 @@
 
         .topic-header h3 {
             font-size: 1rem;
-            color: #36454f;
+            color: var(--cream);
             margin: 0;
             font-weight: 600;
             flex: 1;
@@ -508,7 +577,7 @@
 
         .topic-arrow {
             display: inline-block;
-            color: #708090;
+            color: var(--gold);
             font-size: 0.9rem;
             transition: transform 0.3s ease;
             flex-shrink: 0;
@@ -521,7 +590,7 @@
 
         .topic-count {
             font-size: 0.85rem;
-            color: #708090;
+            color: var(--white-50);
             margin-top: 0.5rem;
             display: block;
         }
@@ -539,15 +608,15 @@
         }
 
         .topic-post {
-            border-left: 3px solid #36454f;
+            border-left: 3px solid var(--gold);
             padding-left: 15px;
             margin: 10px 0;
-            color: #36454f;
+            color: var(--white-80);
         }
 
         .topic-post-date {
             font-weight: 600;
-            color: #708090;
+            color: var(--gold);
             font-size: 0.9rem;
         }
 
@@ -555,12 +624,12 @@
             font-size: 0.9rem;
             line-height: 1.5;
             margin-top: 0.3rem;
-            color: #36454f;
+            color: var(--white-80);
         }
 
-        /* Section 6: Evolution */
+        /* ===== Section 6: Evolution ===== */
         #evolution {
-            background: #ffffff;
+            background: var(--navy-deep);
         }
 
         .timeline-eras {
@@ -570,30 +639,32 @@
         }
 
         .era-block {
-            background: #f5f5f5;
+            background: var(--navy-mid);
             padding: 2rem;
             border-radius: 8px;
-            border-left: 5px solid #36454f;
+            border-left: 5px solid var(--gold);
+            border: 1px solid var(--white-10);
+            border-left: 5px solid var(--gold);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .era-block:hover {
             transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(54, 69, 79, 0.1);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
         }
 
         .era-year {
             font-family: 'Playfair Display', serif;
             font-size: 1.3rem;
             font-weight: 600;
-            color: #36454f;
+            color: var(--gold);
             margin-bottom: 0.5rem;
         }
 
         .era-title {
             font-family: 'Playfair Display', serif;
             font-size: 1.5rem;
-            color: #36454f;
+            color: var(--cream);
             margin-bottom: 1.5rem;
         }
 
@@ -607,30 +678,31 @@
             padding-left: 1.5rem;
             position: relative;
             font-size: 0.95rem;
-            color: #36454f;
+            color: var(--white-80);
         }
 
         .era-bullets li::before {
             content: '•';
             position: absolute;
             left: 0;
-            color: #708090;
+            color: var(--gold);
             font-weight: bold;
         }
 
         .era-quote {
-            background: white;
+            background: rgba(201, 168, 76, 0.08);
             padding: 1.5rem;
-            border-left: 3px solid #708090;
+            border-left: 3px solid var(--gold);
             margin-top: 1.5rem;
             font-style: italic;
-            color: #708090;
+            color: var(--white-50);
             font-size: 0.95rem;
+            border-radius: 0 4px 4px 0;
         }
 
-        /* Section 7: Principles */
+        /* ===== Section 7: Principles ===== */
         #principles {
-            background: #ffffff;
+            background: var(--navy-deep);
         }
 
         .principles-grid {
@@ -640,28 +712,29 @@
         }
 
         .principle-card {
-            background: #f5f5f5;
+            background: var(--navy-mid);
             padding: 2rem;
             border-radius: 8px;
-            border-top: 3px solid #36454f;
+            border: 1px solid var(--white-10);
+            border-top: 3px solid var(--gold);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .principle-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(54, 69, 79, 0.1);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
         }
 
         .principle-card h3 {
             font-family: 'Playfair Display', serif;
             font-size: 1.1rem;
             margin-bottom: 1rem;
-            color: #36454f;
+            color: var(--cream);
         }
 
         .principle-card p {
             font-size: 0.9rem;
-            color: #36454f;
+            color: var(--white-80);
             line-height: 1.6;
         }
 
@@ -677,16 +750,16 @@
             }
         }
 
-        /* Section 8: AI Skill */
+        /* ===== Section 8: AI Skill ===== */
         #aiskill {
-            background: #ffffff;
+            background: var(--navy-deep);
         }
 
         .skill-card {
-            background: #f5f5f5;
+            background: var(--navy-mid);
             padding: 3rem;
             border-radius: 8px;
-            border: 1px solid #d3d3d3;
+            border: 1px solid var(--white-10);
             max-width: 700px;
             margin: 0 auto;
             text-align: center;
@@ -696,28 +769,29 @@
             font-family: 'Playfair Display', serif;
             font-size: 1.8rem;
             margin-bottom: 1.5rem;
-            color: #36454f;
+            color: var(--cream);
         }
 
         .skill-description {
             font-size: 0.95rem;
-            color: #36454f;
+            color: var(--white-80);
             line-height: 1.7;
             margin-bottom: 2rem;
         }
 
         .skill-steps {
-            background: white;
+            background: rgba(255,255,255,0.03);
             padding: 2rem;
             border-radius: 8px;
             margin-bottom: 2rem;
             text-align: left;
+            border: 1px solid var(--white-10);
         }
 
         .skill-steps ol {
             margin-left: 1.5rem;
             font-size: 0.9rem;
-            color: #36454f;
+            color: var(--white-80);
         }
 
         .skill-steps li {
@@ -725,36 +799,54 @@
         }
 
         .skill-steps code {
-            background: #e5e5e5;
+            background: rgba(201, 168, 76, 0.15);
+            color: var(--gold);
             padding: 0.25rem 0.5rem;
             border-radius: 3px;
             font-family: monospace;
         }
 
         .skill-button {
-            background: #36454f;
-            color: white;
+            background: var(--cream);
+            color: var(--navy-deep);
             border: none;
             padding: 1rem 2.5rem;
             border-radius: 4px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .skill-button:hover {
-            background: #708090;
+            background: var(--gold);
+            color: var(--navy-deep);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(201, 168, 76, 0.3);
         }
 
         /* Footer */
         footer {
-            background: #f5f5f5;
+            background: var(--navy-mid);
             padding: 2rem;
             text-align: center;
             font-size: 0.85rem;
-            color: #708090;
-            border-top: 1px solid #d3d3d3;
+            color: var(--white-50);
+            border-top: 1px solid var(--white-10);
+            position: relative;
+            z-index: 1;
+        }
+
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--cream);
         }
 
         /* Responsive */
@@ -765,18 +857,142 @@
             .section-title {
                 font-size: 1.8rem;
             }
-            nav a {
-                display: none;
-            }
-            nav ul {
-                display: none;
-            }
+        }
+
+        /* ===== INTRO SCREEN ===== */
+        #intro {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--navy-deep);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #intro.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        /* Fabric texture on intro */
+        #intro::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.035;
+            background:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.03) 2px, rgba(255,255,255,0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(255,255,255,0.02) 2px, rgba(255,255,255,0.02) 4px);
+        }
+        /* Stitched border */
+        #intro::after {
+            content: '';
+            position: absolute;
+            top: 24px; left: 24px; right: 24px; bottom: 24px;
+            border: 1.5px dashed var(--white-20);
+            border-radius: 6px;
+            pointer-events: none;
+        }
+
+        #introCanvas {
+            position: relative;
+            z-index: 2;
+            width: clamp(300px, 75vw, 760px);
+            height: clamp(60px, 14vw, 140px);
+        }
+
+        .intro-swash-wrap {
+            position: relative;
+            z-index: 2;
+            width: clamp(140px, 28vw, 280px);
+            margin-top: 4px;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+        .intro-swash-wrap.show { opacity: 1; }
+        .intro-swash-wrap svg { width: 100%; height: auto; }
+
+        .intro-arrow {
+            position: relative;
+            z-index: 2;
+            margin-top: 44px;
+            opacity: 0;
+            transform: translateY(-16px);
+            transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
+            cursor: pointer;
+            color: var(--white-50);
+            font-size: 2rem;
+            background: none;
+            border: none;
+            padding: 12px;
+            line-height: 1;
+        }
+        .intro-arrow.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .intro-arrow:hover { color: var(--gold); }
+
+        @keyframes arrow-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
+        }
+        .intro-arrow.show {
+            animation: arrow-bounce 2s ease-in-out infinite;
+        }
+
+        /* Tap hint */
+        .intro-tap-hint {
+            position: absolute;
+            z-index: 2;
+            bottom: 28%;
+            left: 0; right: 0;
+            text-align: center;
+            color: var(--white-50);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            text-transform: lowercase;
+            animation: tap-pulse 2s ease-in-out infinite;
+            cursor: pointer;
+        }
+        .intro-tap-hint.hidden { display: none; }
+        @keyframes tap-pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.9; }
+        }
+
+        /* Nav hidden during intro */
+        nav.nav-hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: transform 0.5s ease 0.3s, opacity 0.5s ease 0.3s;
+        }
+        nav {
+            transition: transform 0.5s ease, opacity 0.5s ease;
         }
     </style>
 </head>
 <body>
+    <!-- INTRO SCREEN -->
+    <div id="intro">
+        <canvas id="introCanvas" width="760" height="160"></canvas>
+        <div class="intro-swash-wrap" id="introSwash">
+            <svg viewBox="0 0 280 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path id="swashPath1" d="M6 16 C50 6 100 4 140 12 C180 20 230 16 274 8" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                <path id="swashPath2" d="M6 18 C35 10 70 6 100 12" stroke="#c9a84c" stroke-width="2.2" stroke-linecap="round" opacity="0.85"/>
+            </svg>
+        </div>
+        <button class="intro-arrow" id="introArrow" aria-label="Перейти к сайту">↓</button>
+        <div class="intro-tap-hint" id="introTapHint">нажмите, чтобы начать</div>
+    </div>
+
     <!-- Navigation -->
-    <nav>
+    <nav class="nav-hidden">
         <div class="logo">Loader from SVO</div>
         <ul>
             <li><a href="#hero">Главная</a></li>
@@ -794,6 +1010,14 @@
     <section id="hero">
         <div>
             <div class="hero-logo">Loader from SVO</div>
+            <!-- SVG Swash decoration -->
+            <svg class="hero-swash" viewBox="0 0 220 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 12 C30 20, 60 4, 110 12 C160 20, 190 4, 210 12" stroke="#c9a84c" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <path d="M30 12 C60 18, 90 6, 110 12 C130 18, 160 6, 190 12" stroke="#c9a84c" stroke-width="0.8" fill="none" stroke-linecap="round" opacity="0.5"/>
+                <circle cx="110" cy="12" r="2" fill="#c9a84c" opacity="0.6"/>
+                <circle cx="10" cy="12" r="1.5" fill="#c9a84c" opacity="0.4"/>
+                <circle cx="210" cy="12" r="1.5" fill="#c9a84c" opacity="0.4"/>
+            </svg>
             <div class="hero-subtitle">Telegram-канал профессора Романа Бевзенко</div>
             <div class="hero-tagline">Право • Практика • Позиция</div>
 
@@ -816,9 +1040,12 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Section 2: About Author -->
     <section id="about">
         <div>
+            <div class="section-eyebrow">Биография</div>
             <h2 class="section-title">Об авторе</h2>
 
             <div class="about-container">
@@ -905,9 +1132,12 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Section 3: About Channel -->
     <section id="channel">
         <div>
+            <div class="section-eyebrow">Канал</div>
             <h2 class="section-title">О канале</h2>
 
             <div class="channel-info">
@@ -932,9 +1162,12 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Section 4: Growth Dynamics -->
     <section id="growth">
         <div>
+            <div class="section-eyebrow">Аналитика</div>
             <h2 class="section-title">Динамика роста</h2>
 
             <div class="charts-container">
@@ -952,12 +1185,15 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Section 5: Topic Map -->
     <section id="topicmap">
         <div>
+            <div class="section-eyebrow">Контент</div>
             <h2 class="section-title">Тематическая карта</h2>
 
-            <div style="background: #f5f5f5; padding: 2rem; border-radius: 8px; border-top: 3px solid #36454f;">
+            <div class="topics-chart-container">
                 <canvas id="topicsChart" style="max-height: 600px;"></canvas>
             </div>
 
@@ -969,9 +1205,12 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Section 6: Evolution -->
     <section id="evolution">
         <div>
+            <div class="section-eyebrow">Хронология</div>
             <h2 class="section-title">Эволюция взглядов</h2>
 
             <div class="timeline-eras">
@@ -1057,9 +1296,12 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Section 7: Principles -->
     <section id="principles">
         <div>
+            <div class="section-eyebrow">Убеждения</div>
             <h2 class="section-title">Принципиальные позиции</h2>
 
             <div class="principles-grid">
@@ -1096,9 +1338,12 @@
         </div>
     </section>
 
+    <div class="section-divider"></div>
+
     <!-- Section 8: AI Skill -->
     <section id="aiskill">
         <div>
+            <div class="section-eyebrow">Инструмент</div>
             <h2 class="section-title">AI-скилл</h2>
 
             <div class="skill-card">
@@ -1115,7 +1360,7 @@
                     </ol>
                 </div>
 
-                <a href="bevzenko-consult.skill" download class="skill-button" style="text-decoration:none;display:inline-block;">Скачать скилл</a>
+                <a href="bevzenko-consult.skill" download class="skill-button">Скачать скилл</a>
             </div>
         </div>
     </section>
@@ -1123,7 +1368,285 @@
     <!-- Footer -->
     <footer>
         <p>Данные собраны и проанализированы в марте 2026 года • На основе экспорта Telegram-канала «Loader from SVO»</p>
+        <p style="margin-top: 0.75rem; font-size: 0.75rem;">
+            <a href="https://www.perplexity.ai/computer" target="_blank" rel="noopener noreferrer">Created with Perplexity Computer</a>
+        </p>
     </footer>
+
+    <script>
+    /* ===== INTRO ANIMATION: character-by-character handwriting ===== */
+    (function() {
+        const intro  = document.getElementById('intro');
+        const canvas = document.getElementById('introCanvas');
+        const ctx    = canvas.getContext('2d');
+        const swash  = document.getElementById('introSwash');
+        const arrow  = document.getElementById('introArrow');
+        const hint   = document.getElementById('introTapHint');
+        const nav    = document.querySelector('nav');
+        const sw1    = document.getElementById('swashPath1');
+        const sw2    = document.getElementById('swashPath2');
+        let started  = false;
+
+        const TEXT   = 'Loader from SVO';
+        const CREAM  = '#f0ece4';
+        const DPR    = Math.min(window.devicePixelRatio || 1, 3);
+
+        /* Scale canvas for retina */
+        function sizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width  = rect.width * DPR;
+            canvas.height = rect.height * DPR;
+            ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        }
+
+        /* ─── AUDIO ENGINE ─── */
+        let ac, masterGain;
+        let pencilSrc, pencilGain;
+        let swashSrc, swashGain;
+
+        function initAudio() {
+            ac = new (window.AudioContext || window.webkitAudioContext)();
+            if (ac.state === 'suspended') ac.resume();
+            masterGain = ac.createGain();
+            masterGain.gain.value = 1;
+            masterGain.connect(ac.destination);
+        }
+
+        /* Pencil on paper: pink-ish noise → higher bandpass → bright shelf */
+        function buildPencilChain() {
+            const sr  = ac.sampleRate;
+            const len = sr * 3;
+            const buf = ac.createBuffer(1, len, sr);
+            const d   = buf.getChannelData(0);
+            /* Lighter noise: less brownian smoothing → more high-freq content */
+            let v = 0;
+            for (let i = 0; i < len; i++) {
+                const white = Math.random() * 2 - 1;
+                v = (v + 0.04 * white) / 1.04;
+                d[i] = v * 2.8 + white * 0.3;
+            }
+            pencilSrc = ac.createBufferSource();
+            pencilSrc.buffer = buf;
+            pencilSrc.loop = true;
+
+            const bp = ac.createBiquadFilter();
+            bp.type = 'bandpass'; bp.frequency.value = 4200; bp.Q.value = 0.5;
+
+            const hp = ac.createBiquadFilter();
+            hp.type = 'highpass'; hp.frequency.value = 1800;
+
+            const sh = ac.createBiquadFilter();
+            sh.type = 'highshelf'; sh.frequency.value = 5500; sh.gain.value = 4;
+
+            pencilGain = ac.createGain();
+            pencilGain.gain.value = 0;
+
+            pencilSrc.connect(bp).connect(hp).connect(sh).connect(pencilGain).connect(masterGain);
+            pencilSrc.start();
+        }
+
+        function pencilOn()  { if (pencilGain) pencilGain.gain.setTargetAtTime(0.38, ac.currentTime, 0.02); }
+        function pencilOff() { if (pencilGain) pencilGain.gain.setTargetAtTime(0, ac.currentTime, 0.04); }
+        function pencilWobble(t) {
+            if (!pencilGain) return;
+            const v = 0.32 + Math.sin(t * 0.013) * 0.08 + Math.random() * 0.04;
+            pencilGain.gain.setTargetAtTime(v, ac.currentTime, 0.01);
+        }
+
+        /* Swash sound: filtered sweep for the gold flourish */
+        function playSwashSound() {
+            if (!ac) return;
+            const sr  = ac.sampleRate;
+            const len = Math.floor(sr * 0.6);
+            const buf = ac.createBuffer(1, len, sr);
+            const d   = buf.getChannelData(0);
+            let v = 0;
+            for (let i = 0; i < len; i++) {
+                v = (v + 0.015 * (Math.random() * 2 - 1)) / 1.015;
+                const env = Math.sin(Math.PI * i / len);
+                d[i] = v * 4 * env;
+            }
+            swashSrc = ac.createBufferSource();
+            swashSrc.buffer = buf;
+
+            const lp = ac.createBiquadFilter();
+            lp.type = 'lowpass'; lp.frequency.value = 1800;
+
+            const bp = ac.createBiquadFilter();
+            bp.type = 'bandpass'; bp.frequency.value = 600; bp.Q.value = 0.3;
+
+            swashGain = ac.createGain();
+            swashGain.gain.value = 0.5;
+
+            swashSrc.connect(lp).connect(bp).connect(swashGain).connect(masterGain);
+            swashSrc.start();
+        }
+
+        function stopAll() {
+            pencilOff();
+            setTimeout(() => {
+                try { pencilSrc && pencilSrc.stop(); } catch(e) {}
+            }, 200);
+        }
+
+        /* ─── DRAWING ─── */
+        function getFontSize() {
+            /* Responsive font size matching canvas CSS width */
+            const w = canvas.getBoundingClientRect().width;
+            return Math.max(32, Math.min(72, w * 0.095));
+        }
+
+        /* Draw text up to charIndex (inclusive), with partial reveal on last char */
+        function drawFrame(charIndex, charProgress) {
+            const w = canvas.getBoundingClientRect().width;
+            const h = canvas.getBoundingClientRect().height;
+            ctx.clearRect(0, 0, w, h);
+
+            const fs = getFontSize();
+            ctx.font = '700 ' + fs + 'px "Dancing Script", cursive';
+            ctx.textBaseline = 'middle';
+
+            /* Measure full text to center it */
+            const fullW = ctx.measureText(TEXT).width;
+            const startX = (w - fullW) / 2;
+            const y = h / 2;
+
+            let x = startX;
+            for (let i = 0; i <= charIndex && i < TEXT.length; i++) {
+                const ch = TEXT[i];
+                const isLast = (i === charIndex);
+                const alpha = isLast ? charProgress : 1;
+
+                if (isLast && charProgress < 1) {
+                    /* Drawing phase: stroke outline first, then fill fades in */
+                    const strokeAlpha = Math.min(alpha * 3, 1);
+                    const fillAlpha = Math.max(0, (alpha - 0.3) / 0.7);
+
+                    /* Stroke */
+                    ctx.strokeStyle = 'rgba(240,236,228,' + strokeAlpha + ')';
+                    ctx.lineWidth = 1;
+                    ctx.lineJoin = 'round';
+                    ctx.strokeText(ch, x, y);
+
+                    /* Fill */
+                    if (fillAlpha > 0) {
+                        ctx.fillStyle = 'rgba(240,236,228,' + fillAlpha + ')';
+                        ctx.fillText(ch, x, y);
+                    }
+                } else {
+                    ctx.fillStyle = CREAM;
+                    ctx.fillText(ch, x, y);
+                }
+                x += ctx.measureText(ch).width;
+            }
+        }
+
+        /* ─── SWASH DRAW ANIMATION ─── */
+        function animateSwash() {
+            return new Promise(resolve => {
+                /* Prep stroke-dasharray for both paths */
+                const len1 = sw1.getTotalLength();
+                const len2 = sw2.getTotalLength();
+                sw1.style.strokeDasharray = len1;
+                sw1.style.strokeDashoffset = len1;
+                sw2.style.strokeDasharray = len2;
+                sw2.style.strokeDashoffset = len2;
+                swash.classList.add('show');
+
+                playSwashSound();
+
+                const dur = 600;
+                let start = null;
+                function tick(ts) {
+                    if (!start) start = ts;
+                    const p = Math.min((ts - start) / dur, 1);
+                    const e = 1 - Math.pow(1 - p, 3);
+                    sw1.style.strokeDashoffset = len1 * (1 - e);
+                    sw2.style.strokeDashoffset = len2 * (1 - Math.min(e * 1.5, 1));
+                    if (p < 1) requestAnimationFrame(tick);
+                    else resolve();
+                }
+                requestAnimationFrame(tick);
+            });
+        }
+
+        /* ─── MAIN SEQUENCE ─── */
+        async function runIntro() {
+            sizeCanvas();
+            initAudio();
+            buildPencilChain();
+
+            const chars = TEXT.split('');
+            const CHAR_DUR = 140;   /* ms per character stroke */
+            const SPACE_PAUSE = 80; /* extra pause on spaces */
+
+            for (let i = 0; i < chars.length; i++) {
+                const ch = chars[i];
+                const isSpace = (ch === ' ');
+                const dur = isSpace ? 40 : CHAR_DUR + Math.random() * 40;
+
+                if (!isSpace) pencilOn();
+
+                /* Animate this character appearing */
+                await new Promise(resolve => {
+                    let start = null;
+                    function tick(ts) {
+                        if (!start) start = ts;
+                        const elapsed = ts - start;
+                        const p = Math.min(elapsed / dur, 1);
+                        if (!isSpace) pencilWobble(ts);
+                        drawFrame(i, p);
+                        if (p < 1) requestAnimationFrame(tick);
+                        else resolve();
+                    }
+                    requestAnimationFrame(tick);
+                });
+
+                pencilOff();
+
+                /* Brief pause between chars ("lift pencil") */
+                if (isSpace) {
+                    await new Promise(r => setTimeout(r, SPACE_PAUSE));
+                } else {
+                    await new Promise(r => setTimeout(r, 25 + Math.random() * 30));
+                }
+            }
+
+            stopAll();
+
+            /* Gold swash with drawing sound */
+            await new Promise(r => setTimeout(r, 250));
+            await animateSwash();
+
+            /* Arrow */
+            await new Promise(r => setTimeout(r, 400));
+            arrow.classList.add('show');
+        }
+
+        /* ─── START ON CLICK ─── */
+        function handleStart() {
+            if (started) return;
+            started = true;
+            hint.classList.add('hidden');
+            intro.style.cursor = 'default';
+            runIntro();
+        }
+        intro.addEventListener('click', handleStart);
+        intro.addEventListener('touchstart', handleStart, { passive: true });
+
+        /* ─── ARROW → SITE ─── */
+        arrow.addEventListener('click', function(e) {
+            e.stopPropagation();
+            intro.classList.add('hidden');
+            nav.classList.remove('nav-hidden');
+            setTimeout(() => document.getElementById('hero').scrollIntoView({ behavior: 'smooth' }), 300);
+            setTimeout(() => { intro.style.display = 'none'; if (ac) ac.close(); }, 1000);
+        });
+
+        /* Handle resize */
+        window.addEventListener('resize', () => { if (started) { sizeCanvas(); drawFrame(TEXT.length - 1, 1); } });
+    })();
+    </script>
 
     <script>
         // Intersection Observer for fade-in animations
@@ -1156,7 +1679,7 @@
                         datasets: [{
                             label: 'Публикации',
                             data: [224, 366, 276, 287, 370, 401, 416, 89],
-                            backgroundColor: '#36454f',
+                            backgroundColor: '#c9a84c',
                             borderRadius: 4,
                             borderSkipped: false
                         }]
@@ -1173,13 +1696,13 @@
                             y: {
                                 beginAtZero: true,
                                 border: { display: false },
-                                grid: { color: '#e5e5e5' },
-                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                                grid: { color: 'rgba(255,255,255,0.06)' },
+                                ticks: { color: 'rgba(255,255,255,0.5)', font: { family: "'Inter', sans-serif" } }
                             },
                             x: {
                                 border: { display: false },
                                 grid: { display: false },
-                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                                ticks: { color: 'rgba(255,255,255,0.5)', font: { family: "'Inter', sans-serif" } }
                             }
                         }
                     }
@@ -1196,10 +1719,10 @@
                         datasets: [{
                             label: 'Подписчики',
                             data: [1000, 15000, 16000, 25000, 30000, 40000, 43000],
-                            borderColor: '#36454f',
-                            backgroundColor: 'rgba(54, 69, 79, 0.1)',
-                            pointBackgroundColor: '#708090',
-                            pointBorderColor: '#36454f',
+                            borderColor: '#c9a84c',
+                            backgroundColor: 'rgba(201, 168, 76, 0.15)',
+                            pointBackgroundColor: '#c9a84c',
+                            pointBorderColor: '#f0ece4',
                             pointRadius: 5,
                             pointHoverRadius: 7,
                             borderWidth: 2,
@@ -1219,13 +1742,13 @@
                             y: {
                                 beginAtZero: true,
                                 border: { display: false },
-                                grid: { color: '#e5e5e5' },
-                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                                grid: { color: 'rgba(255,255,255,0.06)' },
+                                ticks: { color: 'rgba(255,255,255,0.5)', font: { family: "'Inter', sans-serif" } }
                             },
                             x: {
                                 border: { display: false },
                                 grid: { display: false },
-                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                                ticks: { color: 'rgba(255,255,255,0.5)', font: { family: "'Inter', sans-serif" } }
                             }
                         }
                     }
@@ -1251,11 +1774,11 @@
                 ];
                 const topicData = [908, 668, 549, 518, 474, 369, 328, 252, 166, 145, 143, 100];
 
-                // Create gradient palette
+                // Create gradient palette from gold to navy
                 const colors = [
-                    '#36454f', '#3f4f5f', '#4a586d', '#54627b', '#5e6c89',
-                    '#687697', '#7280a5', '#7c8ab3', '#8694c1', '#909ecf',
-                    '#9aa8dd', '#a0aab0'
+                    '#c9a84c', '#b99e4e', '#a89350', '#988952',
+                    '#877e54', '#777456', '#666958', '#565f5a',
+                    '#45545c', '#354a5e', '#243f60', '#1a3058'
                 ];
 
                 new Chart(topicsCtx, {
@@ -1283,13 +1806,13 @@
                             x: {
                                 beginAtZero: true,
                                 border: { display: false },
-                                grid: { color: '#e5e5e5' },
-                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif" } }
+                                grid: { color: 'rgba(255,255,255,0.06)' },
+                                ticks: { color: 'rgba(255,255,255,0.5)', font: { family: "'Inter', sans-serif" } }
                             },
                             y: {
                                 border: { display: false },
                                 grid: { display: false },
-                                ticks: { color: '#708090', font: { family: "'Inter', sans-serif", size: 11 } }
+                                ticks: { color: 'rgba(255,255,255,0.5)', font: { family: "'Inter', sans-serif", size: 11 } }
                             }
                         }
                     }
