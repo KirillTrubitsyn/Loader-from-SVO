@@ -1487,62 +1487,51 @@
         let pencilSrc, pencilGain;
         let swashSrc, swashGain;
 
-        let audioReady = false;
-        let pencilBuf = null; /* pre-built noise buffer, reusable */
+        /* Prime the AudioContext for iOS Safari.
+           iOS requires that BOTH AudioContext creation AND a node's start()
+           happen synchronously within the same user-gesture call stack
+           (specifically touchend or click). If resume() is called async
+           or start() is deferred, the context stays suspended forever.
 
+           Strategy: create AC + play a silent 1-sample buffer immediately
+           in the event handler. This "unlocks" the AC. Then build the
+           actual pencil chain right after — still in the same call stack. */
         function initAudio() {
             try {
                 ac = new (window.AudioContext || window.webkitAudioContext)();
-                /* resume() MUST be called synchronously in the user-gesture
-                   call stack — iOS/Safari requires this. */
                 ac.resume();
                 masterGain = ac.createGain();
                 masterGain.gain.value = 1;
                 masterGain.connect(ac.destination);
 
-                /* On mobile, AudioContext may still be 'suspended' here.
-                   We listen for the state change to know when audio is truly ready.
-                   On desktop it's usually 'running' immediately. */
-                if (ac.state === 'running') {
-                    audioReady = true;
-                } else {
-                    ac.onstatechange = function() {
-                        if (ac.state === 'running') {
-                            audioReady = true;
-                            /* If pencil chain wasn't built yet, build it now */
-                            if (!pencilSrc && pencilBuf) {
-                                startPencilSource();
-                            }
-                        }
-                    };
-                }
+                /* "Prime" trick: play a tiny silent buffer to force iOS
+                   to transition the context to 'running' right now. */
+                const silentBuf = ac.createBuffer(1, 1, ac.sampleRate);
+                const silentSrc = ac.createBufferSource();
+                silentSrc.buffer = silentBuf;
+                silentSrc.connect(ac.destination);
+                silentSrc.start();
             } catch(e) {
                 ac = null;
             }
         }
 
-        /* Pre-generate the noise buffer (cheap CPU, no AudioContext state needed) */
-        function buildPencilBuffer() {
+        /* Build and immediately start the pencil noise chain.
+           Called right after initAudio() in the same call stack. */
+        function buildPencilChain() {
             if (!ac) return;
             const sr  = ac.sampleRate;
             const len = sr * 3;
-            pencilBuf = ac.createBuffer(1, len, sr);
-            const d   = pencilBuf.getChannelData(0);
+            const buf = ac.createBuffer(1, len, sr);
+            const d   = buf.getChannelData(0);
             let v = 0;
             for (let i = 0; i < len; i++) {
                 const white = Math.random() * 2 - 1;
                 v = (v + 0.04 * white) / 1.04;
                 d[i] = v * 2.8 + white * 0.3;
             }
-        }
-
-        /* Wire up and start the pencil audio source.
-           Only call when ac.state === 'running'. */
-        function startPencilSource() {
-            if (!ac || !pencilBuf || pencilSrc) return;
-
             pencilSrc = ac.createBufferSource();
-            pencilSrc.buffer = pencilBuf;
+            pencilSrc.buffer = buf;
             pencilSrc.loop = true;
 
             const bp = ac.createBiquadFilter();
@@ -1559,15 +1548,6 @@
 
             pencilSrc.connect(bp).connect(hp).connect(sh).connect(pencilGain).connect(masterGain);
             pencilSrc.start();
-        }
-
-        /* Build buffer + start source if context is already running */
-        function buildPencilChain() {
-            buildPencilBuffer();
-            if (audioReady) {
-                startPencilSource();
-            }
-            /* Otherwise, onstatechange will call startPencilSource() */
         }
 
         function pencilOn()  { if (pencilGain && ac) pencilGain.gain.setTargetAtTime(0.38, ac.currentTime, 0.02); }
@@ -1697,19 +1677,20 @@
 
         /* ─── MAIN SEQUENCE ─── */
         async function runIntro() {
-            initAudio();
+            /* initAudio() + buildPencilChain() are called BEFORE this function
+               in handleStart(), synchronously in the user-gesture call stack.
+               This is required for iOS Safari to unlock the AudioContext. */
 
             /* Wait for Dancing Script font — critical for canvas text rendering.
                On mobile, the font may not be loaded yet when animation starts,
                causing canvas to draw invisible/zero-width text. */
             try {
                 await document.fonts.load('700 48px "Dancing Script"');
-            } catch(e) { /* fallback: wait a bit for font to arrive */ 
+            } catch(e) {
                 await new Promise(r => setTimeout(r, 300));
             }
 
             sizeCanvas();
-            buildPencilChain();
 
             const chars = TEXT.split('');
             const CHAR_DUR = 140;   /* ms per character stroke */
@@ -1764,10 +1745,19 @@
             started = true;
             hint.classList.add('hidden');
             intro.style.cursor = 'default';
+
+            /* CRITICAL: initAudio + buildPencilChain + pencilSrc.start()
+               MUST run synchronously inside the user-gesture call stack.
+               iOS Safari will only unlock AudioContext if a node's start()
+               is called in the same synchronous stack as the touch/click event.
+               Moving these into async runIntro() or after any await breaks iOS audio. */
+            initAudio();
+            buildPencilChain();
+
             runIntro();
         }
         intro.addEventListener('click', handleStart);
-        intro.addEventListener('touchstart', handleStart, { passive: true });
+        intro.addEventListener('touchend', handleStart);
 
         /* ─── ARROW → SITE ─── */
         arrow.addEventListener('click', function(e) {
