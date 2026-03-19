@@ -294,6 +294,68 @@
             background: var(--navy-deep);
         }
 
+        /* Author hero: photo + intro */
+        .author-hero {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .author-photo-wrap {
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .author-photo-wrap img {
+            width: 260px;
+            height: 320px;
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 6px;
+            display: block;
+            mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+        }
+
+        .author-photo-wrap::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 20px;
+            bottom: 40px;
+            width: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .author-intro {
+            flex: 1;
+        }
+
+        .author-intro .author-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 0.5rem;
+        }
+
+        .author-intro .author-role {
+            font-size: 0.85rem;
+            color: var(--gold);
+            letter-spacing: 0.05em;
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .author-intro p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--white-80);
+        }
+
         .section-eyebrow {
             font-size: 0.75rem;
             color: var(--gold);
@@ -408,6 +470,16 @@
         }
 
         @media (max-width: 768px) {
+            .author-hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            .author-photo-wrap img {
+                width: 180px;
+                height: 220px;
+            }
+            .author-photo-wrap::before { display: none; }
             .about-container {
                 grid-template-columns: 1fr;
             }
@@ -1126,6 +1198,18 @@
     <section id="about">
         <div>
             <h2 class="section-title">Об авторе</h2>
+
+            <!-- Author hero with photo -->
+            <div class="author-hero">
+                <div class="author-photo-wrap">
+                    <img src="bevzenko.jpg" alt="Роман Бевзенко">
+                </div>
+                <div class="author-intro">
+                    <div class="author-name">Роман Сергеевич Бевзенко</div>
+                    <div class="author-role">Доктор юридических наук &bull; Профессор MNU</div>
+                    <p>Один из самых ярких и влиятельных российских цивилистов. Действительный государственный советник юстиции 2 класса, автор более 150 научных работ. Известен острым языком и придуманным термином «законорея». Пишет иронично, критикует, не боится спорить с Верховным Судом.</p>
+                </div>
+            </div>
 
             <div class="about-container">
                 <!-- Left: Key Facts -->
