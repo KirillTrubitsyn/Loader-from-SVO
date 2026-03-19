@@ -688,39 +688,55 @@
         /* ===== Section 7: Principles ===== */
         #principles {
             background: var(--navy-deep);
+            height: 100vh;
+            box-sizing: border-box;
+            padding: 3rem 2rem 2rem;
+        }
+
+        #principles > div {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #principles .section-title {
+            margin-bottom: 1.5rem;
         }
 
         .principles-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 1.2rem;
+            flex: 1;
         }
 
         .principle-card {
             background: var(--navy-mid);
-            padding: 2rem;
+            padding: 1.2rem 1.4rem;
             border-radius: 8px;
             border: 1px solid var(--white-10);
             border-top: 3px solid var(--gold);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .principle-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
             box-shadow: 0 12px 32px rgba(0,0,0,0.3);
         }
 
         .principle-card h3 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
+            font-size: 1rem;
+            margin-bottom: 0.6rem;
             color: var(--cream);
         }
 
         .principle-card p {
-            font-size: 0.9rem;
+            font-size: 0.82rem;
             color: var(--white-80);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         @media (max-width: 1024px) {
@@ -738,11 +754,25 @@
         /* ===== Section 8: AI Skill ===== */
         #aiskill {
             background: var(--navy-deep);
+            height: 100vh;
+            box-sizing: border-box;
+            padding: 3rem 2rem 2rem;
+        }
+
+        #aiskill > div {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        #aiskill .section-title {
+            margin-bottom: 1.5rem;
         }
 
         .skill-card {
             background: var(--navy-mid);
-            padding: 3rem;
+            padding: 2rem 2.5rem;
             border-radius: 8px;
             border: 1px solid var(--white-10);
             max-width: 700px;
@@ -752,43 +782,44 @@
 
         .skill-card h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
             color: var(--cream);
         }
 
         .skill-description {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--white-80);
-            line-height: 1.7;
-            margin-bottom: 2rem;
+            line-height: 1.6;
+            margin-bottom: 1.2rem;
         }
 
         .skill-steps {
             background: rgba(255,255,255,0.03);
-            padding: 2rem;
+            padding: 1.2rem 1.5rem;
             border-radius: 8px;
-            margin-bottom: 2rem;
+            margin-bottom: 1.2rem;
             text-align: left;
             border: 1px solid var(--white-10);
         }
 
         .skill-steps ol {
             margin-left: 1.5rem;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--white-80);
         }
 
         .skill-steps li {
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
 
         .skill-steps code {
             background: rgba(201, 168, 76, 0.15);
             color: var(--gold);
-            padding: 0.25rem 0.5rem;
+            padding: 0.2rem 0.4rem;
             border-radius: 3px;
             font-family: monospace;
+            font-size: 0.85rem;
         }
 
         /* CTA buttons */
@@ -848,13 +879,6 @@
             justify-content: center;
             gap: 1rem;
             flex-wrap: wrap;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin-top: 0.75rem;
         }
 
         .skill-button {
@@ -1406,7 +1430,7 @@
                 </p>
 
                 <div class="skill-steps">
-                    <h4 style="color: var(--cream); margin-bottom: 1rem; font-family: 'Playfair Display', serif;">Установка в Claude (Desktop и Web)</h4>
+                    <h4 style="color: var(--cream); margin-bottom: 0.6rem; font-family: 'Playfair Display', serif; font-size: 0.95rem;">Установка в Claude (Desktop и Web)</h4>
                     <ol>
                         <li>Скачайте файл <code>bevzenko-consult.skill</code> по кнопке ниже</li>
                         <li>В боковом меню слева нажмите <code>Customize</code></li>
@@ -1414,7 +1438,7 @@
                         <li>Нажмите <code>+</code> и выберите <code>Upload a skill</code></li>
                         <li>Загрузите скачанный файл — готово!</li>
                     </ol>
-                    <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--white-50);">После установки просто задавайте вопросы по российскому праву — Claude будет отвечать с учётом базы знаний Бевзенко.</p>
+                    <p style="margin-top: 0.6rem; font-size: 0.8rem; color: var(--white-50);">После установки просто задавайте вопросы по российскому праву — Claude будет отвечать с учётом базы знаний Бевзенко.</p>
                 </div>
 
                 <div class="skill-buttons">
@@ -1428,10 +1452,6 @@
     <!-- Footer -->
     <footer>
         <p>Данные собраны и проанализированы в марте 2026 года • На основе экспорта Telegram-канала «Loader from SVO»</p>
-        <div class="footer-links">
-            <a href="https://t.me/loaderfromSVO" target="_blank" rel="noopener noreferrer">Telegram</a>
-            <a href="https://boosty.to/rbevzenko" target="_blank" rel="noopener noreferrer">Boosty</a>
-        </div>
         <p style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--white-50);">
             Идея и разработка Кирилл Трубицын
         </p>
